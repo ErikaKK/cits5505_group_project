@@ -9,4 +9,11 @@ CITS5505 Group Project
   4. another team member review this pull request
   5. merge your work branch into main branch
 
- 
+- Creating issues
+  - everyone can create issues
+  - issue title need to be clear
+  - add tags (frontend, backend, etc)
+
+- Communication
+  - can directly comment in issues or PRs because we all wfh
+  - please respond within 2 days
