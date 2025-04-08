@@ -1,13 +1,21 @@
-# groupProject
-CITS5505 Group Project
+# CITS5505 Group Project
+## Tech stack
+- HTML
+- CSS
+- Tailwind
+- JQuery
+- Flask
+- AJAX/Websockets
+- SQLite interfaced to via the SQLAlchemy package
 
 ## Get Started
-- Project Workflow:
-  1. create an issue
-  2. assign yourself to an issue and **work on a new branch (not main branch)**
-  3. create a pull request when you solve the issue
-  4. another team member review this pull request
-  5. merge your work branch into main branch
+
+## Project Workflow:
+1. create an issue
+2. assign yourself to an issue and **work on a new branch (not main branch)**
+3. create a pull request when you solve the issue
+4. another team member review this pull request
+5. merge your work branch into main branch
 
 - Creating issues
   - everyone can create issues
