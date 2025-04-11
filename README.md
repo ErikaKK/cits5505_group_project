@@ -59,7 +59,11 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 
 ```
-
+### After modifying the models 
+```bash
+flask db migrate
+flask db upgrade
+```
 ## Explanation
 - `app/` Contains the main application package.​
 

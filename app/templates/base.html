@@ -8,9 +8,77 @@
       href="{{url_for('static', filename='css/main.css')}}"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    {% block head %}{% endblock %}
+    <title>{{ title }} - Group Project</title>
   </head>
   <body>
-    {% block body %}{% endblock %}
+    <nav
+      class="h-20 flex justify-between items-center px-4 md:px-20 bg-white border-b-2 border-gray-200"
+    >
+      <a href="{{ url_for('main.index') }}"> CITS5505 Group Project </a>
+      <button
+        type="button"
+        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-green-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        id="menu-toggle"
+      >
+        <svg
+          class="w-5 h-5"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 17 14"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 1h15M1 7h15M1 13h15"
+          />
+        </svg>
+      </button>
+      <div
+        class="hidden fixed flex justify-center items-center z-9999 top-0 left-0 w-screen h-screen md:relative md:w-auto md:h-auto bg-gray-100 md:bg-white md:block"
+        id="navbar-menu"
+      >
+        <div
+          class="flex flex-col md:gap-4 justify-center items-center md:flex-row"
+          id="navbar-menu-items"
+        >
+          <a href="" class="py-2 hover:text-green-500">Tracks</a
+          ><a href="" class="py-2 hover:text-green-500">Artists</a
+          ><a href="" class="py-2 hover:text-green-500">Genres</a>
+          <a
+            href="{{ url_for('auth.login') }}"
+            class="border-2 border-green-500 cursor-pointer px-4 py-2 rounded-sm hover:bg-green-500"
+          >
+            Log In
+          </a>
+        </div>
+      </div>
+    </nav>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
+
+    <footer class="flex flex-col bg-gray-500 text-white px-4 md:px-20">
+      <div
+        class="flex justify-between items-center mb-6 py-6 border-b flex-col md:flex-row gap-4"
+      >
+        <a href="/"> CITS5505 Group Project </a>
+        <div class="flex md:gap-4 items-center flex-col md:flex-row">
+          <a href="" class="py-2 hover:text-green-500">Tracks</a
+          ><a href="" class="py-2 hover:text-green-500">Artists</a
+          ><a href="" class="py-2 hover:text-green-500">Genres</a>
+        </div>
+      </div>
+      <div class="flex justify-center items-center mb-6">
+        <p>Group 64 @ 2025. All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="../static/js/main.js" defer></script>
   </body>
 </html>
