@@ -49,7 +49,7 @@
           ><a href="" class="py-2 hover:text-green-500">Genres</a>
           {% if login |default(false)%}
           <a
-            href="{{ url_for('main.account') }}"
+            href="{{ url_for('account.profile') }}"
             class="border-2 border-green-500 cursor-pointer px-4 py-2 rounded-sm hover:bg-green-500"
           >
             My account
@@ -67,10 +67,23 @@
     </nav>
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul
-      class="flex flex-col justify-center items-center bg-gray-100 border-2 border-gray-200"
+      class="flex flex-col justify-center items-start bg-gray-100 border-2 border-gray-200 m-4 mb-0 md:mx-20 p-4 gap-4"
     >
       {% for message in messages %}
-      <li>{{ message }}</li>
+      <li class="flex items-center justify-center gap-2">
+        <span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#1f1f1f"
+          >
+            <path
+              d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240ZM330-120 120-330v-300l210-210h300l210 210v300L630-120H330Zm34-80h232l164-164v-232L596-760H364L200-596v232l164 164Zm116-280Z"
+            /></svg></span
+        >{{ message }}
+      </li>
       {% endfor %}
     </ul>
     {% endif %} {% endwith %} {% block content %}{% endblock %}
