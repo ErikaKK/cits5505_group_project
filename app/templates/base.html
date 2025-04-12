@@ -47,17 +47,28 @@
           <a href="" class="py-2 hover:text-green-500">Tracks</a
           ><a href="" class="py-2 hover:text-green-500">Artists</a
           ><a href="" class="py-2 hover:text-green-500">Genres</a>
+          {% if login |default(false)%}
+          <a
+            href="{{ url_for('main.account') }}"
+            class="border-2 border-green-500 cursor-pointer px-4 py-2 rounded-sm hover:bg-green-500"
+          >
+            My account
+          </a>
+          {% else %}
           <a
             href="{{ url_for('auth.login') }}"
             class="border-2 border-green-500 cursor-pointer px-4 py-2 rounded-sm hover:bg-green-500"
           >
             Log In
           </a>
+          {% endif %}
         </div>
       </div>
     </nav>
     {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul>
+    <ul
+      class="flex flex-col justify-center items-center bg-gray-100 border-2 border-gray-200"
+    >
       {% for message in messages %}
       <li>{{ message }}</li>
       {% endfor %}
