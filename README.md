@@ -102,3 +102,4 @@ python3 run.py
 ## References
 - [https://jinja.palletsprojects.com/en/stable/templates/](https://jinja.palletsprojects.com/en/stable/templates/)
 - [https://developer.spotify.com/](https://developer.spotify.com/)
+- [https://fonts.google.com/icons](https://fonts.google.com/icons")
