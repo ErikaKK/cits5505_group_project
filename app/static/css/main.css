@@ -16,6 +16,10 @@
   border: 1px solid #f2f4f8;
   border-bottom: 1px solid #c1c7cd;
 }
+
+.form-control.flex {
+  display: flex;
+}
 .form-control:focus {
   border: 1px solid #c1c7cd;
   background-color: white;
@@ -24,10 +28,18 @@
 
 .btn {
   background-color: #0f62fe;
-  padding: 8px;
+  padding: 8px 32px;
   color: white;
   cursor: pointer;
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.btn:hover {
+  background: #2b7eff;
+}
+
+.btn.w-auto {
+  width: auto;
 }

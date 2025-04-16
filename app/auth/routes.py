@@ -12,7 +12,7 @@ from app.models import User
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index", login=current_user.is_authenticated))
+        return redirect(url_for("account.profile", login=current_user.is_authenticated))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.email == form.email.data))
