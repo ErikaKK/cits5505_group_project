@@ -46,10 +46,7 @@ source venv/bin/activate
 .\venv\Scripts\activate
 ```
 
-### Start the APP
-```bash
-python3 run.py
-```
+
 ### Install Project Dependencies:
 ```bash
 pip install -r requirements.txt
@@ -59,8 +56,17 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 
 ```
+### After modifying the models 
+```bash
+flask db migrate
+flask db upgrade
+```
 
-## Explanation
+### Start the APP
+```bash
+python3 run.py
+```
+## Explanations
 - `app/` Contains the main application package.​
 
 - `auth/` Blueprint for authentication-related routes and forms.​
@@ -81,6 +87,7 @@ pip freeze > requirements.txt
 3. create a pull request when you solve the issue
 4. another team member review this pull request
 5. merge your work branch into main branch
+6. add references to `README.md` if needed
 
 - Creating issues
   - everyone can create issues
@@ -89,4 +96,10 @@ pip freeze > requirements.txt
 
 - Communication
   - can directly comment in issues or PRs because we all wfh
+  - message on Teams group chat if you need
   - please respond within 2 days
+
+## References
+- [https://jinja.palletsprojects.com/en/stable/templates/](https://jinja.palletsprojects.com/en/stable/templates/)
+- [https://developer.spotify.com/](https://developer.spotify.com/)
+- [https://fonts.google.com/icons](https://fonts.google.com/icons")

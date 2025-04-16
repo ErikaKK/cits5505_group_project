@@ -1,0 +1,33 @@
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  display: block;
+  padding: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #697077;
+  background-color: #f2f4f8;
+  border: 1px solid #f2f4f8;
+  border-bottom: 1px solid #c1c7cd;
+}
+.form-control:focus {
+  border: 1px solid #c1c7cd;
+  background-color: white;
+  outline: none;
+}
+
+.btn {
+  background-color: #0f62fe;
+  padding: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
