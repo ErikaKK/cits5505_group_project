@@ -1,6 +1,8 @@
-{% extends 'base.html' %} {% block head %} {% endblock %} {% block body %}
+{% extends 'base.html' %} {% block content %}
 <h1>Template</h1>
-<div class="flex flex-col md:flex-row justify-around py-6 items-center gap-4">
+<div
+  class="flex flex-col md:flex-row justify-around py-6 items-center gap-4 bg-blue-500 text-white"
+>
   <p class="text-4xl font bold">What We Do</p>
   <ul class="list-disc">
     <li>1</li>
@@ -9,5 +11,17 @@
     <li>4</li>
   </ul>
 </div>
-<div></div>
+<div class="p-6 flex flex-col">
+  <h1>Search a song by Spotify Track ID</h1>
+  <form id="searchForm">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search for a song..."
+      required
+    />
+    <button type="submit">Search</button>
+  </form>
+</div>
+<script src="../static/js/index.js" defer></script>
 {% endblock %}

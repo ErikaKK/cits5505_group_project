@@ -1,4 +1,5 @@
 # CITS5505 Group Project
+
 ## Tech stack
 - HTML
 - CSS
@@ -9,71 +10,83 @@
 - SQLite interfaced to via the SQLAlchemy package
 
 ## Get Started
+
+### Python Version
+
+This project requires **Python 3.9.18**. Please ensure you're using this version to avoid compatibility issues.
+
 ### Clone the Repository
+
 ```bash
-git clone git@github.com:ErikaKK/groupProject.git
+git clone git@github.com:ErikaKK/groupProject.git yourProjectDirectory
 ```
+
 ### Navigate to the Project Directory
+
 ```bash
 cd yourProjectDirectory
 ```
 
 ### Create a New Virtual Environment:
-```bash
-python3 -m venv venv
-```
-- Ensure not to commit the virtual environment directory to the version control system 
-- Add `.gitignore` in your virtual environment directory:
-```bash
-cd venv/
-touch .gitignore
-```
-- Or add `venv/` to `.gitignore`
-```bash
-echo "venv/" >> .gitignore
-```
-### Activate the Virtual Environment:
-- On macOS/Linux:
 
-```bash
+1. With venv:
+    ```bash
+    # create environment
+    python3 -m venv venv
+    
+    # activate environment
+    source venv/bin/activate    # macOS/Linux
+    .\venv\Scripts\activate     # Windows
+    ```
+2. Or with conda:
+    ```bash
+    # create environment
+    conda create -n yourEnvName python=3.9.18
 
-source venv/bin/activate
-```
-- On Windows:
+    # activate environment
+    conda activate yourEnvName
+    ```
 
-```bash
+### Manage Dependencies:
 
-.\venv\Scripts\activate
-```
+- Install dependency:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Add new dependency:
+  ```bash
+  pip install <package-name>
+
+  # commit in requirements.txt
+  pip freeze > requirements.txt
+  ```
 
 ### Start the APP
+
 ```bash
 python3 run.py
 ```
-### Install Project Dependencies:
-```bash
-pip install -r requirements.txt
-```
-### After Adding New Project Dependencies:
-```bash
-pip freeze > requirements.txt
 
+### After modifying the models
+
+```bash
+flask db migrate
+flask db upgrade
 ```
 
-## Explanation
+## Explanations
+
 - `app/` Contains the main application package.​
-
-- `auth/` Blueprint for authentication-related routes and forms.​
-
-- `main/` Blueprint for main application routes and forms
+  - `auth/` Blueprint for authentication-related routes and forms.​
+  - `main/` Blueprint for main application routes and forms
+  - `static/` contains static files i.e. CSS, Javascript, images
+  - `__init__.py` initializes your application creating a Flask app instance.
+  - `models.py` Defines database models using SQLAlchemy.
+  - `views.py` this is where routes are defined.
 - `run.py` contains the actual python code that will import the app and start the development server.
 - `config.py` stores configurations for your app.
-- `__init__.py` initializes your application creating a Flask app instance.
-- `views.py` this is where routes are defined.
-- `models.py` Defines database models using SQLAlchemy.
-- `static/` contains static files i.e. CSS, Javascript, images
 - `templates/` this is where you store your html templates i.e. index.html, layout.html
-- `requirements.txt` this is where you store your package dependancies, you can use pip
+- `requirements.txt` this is where you store your package dependencies, you can use pip
 
 ## Project Workflow:
 1. create an issue
@@ -81,6 +94,7 @@ pip freeze > requirements.txt
 3. create a pull request when you solve the issue
 4. another team member review this pull request
 5. merge your work branch into main branch
+6. add references to `README.md` if needed
 
 - Creating issues
   - everyone can create issues
@@ -89,4 +103,12 @@ pip freeze > requirements.txt
 
 - Communication
   - can directly comment in issues or PRs because we all wfh
+  - message on Teams group chat if you need
   - please respond within 2 days
+
+## References
+
+- [https://jinja.palletsprojects.com/en/stable/templates/](https://jinja.palletsprojects.com/en/stable/templates/)
+- [https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+- [https://fonts.google.com/icons](https://fonts.google.com/icons")
+- [https://rapidapi.com/Glavier/api/spotify23](https://rapidapi.com/Glavier/api/spotify23)
