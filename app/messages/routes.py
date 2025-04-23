@@ -16,4 +16,18 @@ def show_messages():
         .order_by(Message.created_at.desc())
         .all()
     )
-    return render_template("messages.html", messages=messages)
+
+    return render_template(
+        "messages/messagelist.html",
+        messages=[
+            {
+                "id": msg.id,
+                "sender_id": msg.sender_id,
+                "receiver_id": msg.receiver_id,
+                "message": msg.message,
+                "created_at": msg.created_at.isoformat() if msg.created_at else None,
+                "shared_data": msg.shared_data,
+            }
+            for msg in messages
+        ],
+    )
