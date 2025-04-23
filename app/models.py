@@ -31,7 +31,7 @@ class Message(db.Model):
     sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.String, default=lambda: datetime.utcnow().isoformat())
     shared_data = db.Column(db.JSON, nullable=True)
 
     def __repr__(self):
