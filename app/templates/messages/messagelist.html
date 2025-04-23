@@ -13,7 +13,8 @@
           {{ msg.sender_id }} → {{ msg.receiver_id }}
         </div>
         <div class="text-sm text-gray-600 truncate">
-          {{ msg.message[:50] }}{% if msg.message|length > 50 %}...{% endif %}
+          {{ msg.message | truncate(50, True, '...') }}{% if msg.message|length
+          > 50 %}...{% endif %}
         </div>
       </li>
       {% endfor %}
