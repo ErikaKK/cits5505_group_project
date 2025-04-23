@@ -1,5 +1,6 @@
 from typing import Optional
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
@@ -23,3 +24,17 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return "<User {}>".format(self.username)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    shared_data = db.Column(db.JSON, nullable=True)
+
+    def __repr__(self):
+        return "<Message from {} to {} at {}: {}>".format(
+            self.sender_id, self.receiver_id, self.created_at, self.message
+        )
