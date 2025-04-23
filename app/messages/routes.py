@@ -1,7 +1,8 @@
-from flask import render_template
+from flask import jsonify, render_template, request
 from flask_login import login_required, current_user
 from app.models import Message, User
 from app.messages import bp
+from app import db
 
 
 # Render the messages for the logged-in user
@@ -30,6 +31,8 @@ def show_messages():
         messages=[
             {
                 "id": msg.id,
+                "sender_id": msg.sender_id,
+                "receiver_id": msg.receiver_id,
                 "sender": (
                     None
                     if msg.sender_id == current_user.id
@@ -41,9 +44,38 @@ def show_messages():
                     else user_map.get(msg.receiver_id, "Unknown")
                 ),
                 "message": msg.message,
-                "created_at": msg.created_at.isoformat() if msg.created_at else None,
+                "created_at": msg.created_at,
                 "shared_data": msg.shared_data,
             }
             for msg in messages
         ],
     )
+
+
+@bp.route("/messages/send", methods=["POST"])
+@login_required
+def send_message():
+    data = request.get_json()
+
+    receiver_id = data.get("receiver_id")
+    content = data.get("message")
+
+    if not receiver_id:
+        return jsonify({"success": False, "error": "Missing fields"}), 400
+
+    if not content:
+        content = "Hello, I want to share something with you!"
+
+    try:
+        msg = Message(
+            sender_id=current_user.id, receiver_id=receiver_id, message=content
+        )
+        print(
+            f"Sender ID: {current_user.id}, Receiver ID: {receiver_id}, Message: {content}"
+        )
+        db.session.add(msg)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Message sent!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
