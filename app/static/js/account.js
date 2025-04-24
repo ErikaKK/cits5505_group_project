@@ -21,3 +21,7 @@ document.getElementById('account-menu-toggle').addEventListener('click', functio
         hideAccountMenu(event);
     }
 });
+
+document.getElementById('logout').addEventListener('click',function(event){
+    localStorage.removeItem('uploadedJsonData');
+})

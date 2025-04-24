@@ -33,7 +33,12 @@
       <a href="" class="py-2 hover:text-green-500">Top Genres</a>
     </div>
   </div>
-  <a href="{{ url_for('auth.logout') }}" class="hover:text-green-500">Logout</a>
+  <a
+    href="{{ url_for('auth.logout') }}"
+    class="hover:text-green-500"
+    id="logout"
+    >Logout</a
+  >
 </div>
 {% block addtional_content %}{% endblock %}
 <script src="../static/js/account.js" defer></script>

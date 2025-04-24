@@ -1,0 +1,26 @@
+{% extends "/account/account.html" %} {% block addtional_content %}
+<div class="flex flex-col justify-center items-center my-20 gap-6">
+  <p class="text-4xl font-bold">Upload your streaming histroy</p>
+
+  <form enctype="multipart/form-data" class="p-6 pt-8 border border-gray-200">
+    <input
+      type="file"
+      name="json_file"
+      accept=".json"
+      class="hidden"
+      id="fileInput"
+    />
+    <label
+      for="fileInput"
+      class="cursor-pointer bg-green-500 text-white border border-green-500 py-2"
+      id="fileLabel"
+      >Upload the data from Spotify (JSON format)</label
+    >
+    <button type="submit" class="btn mt-4" id="upload-btn">Upload</button>
+  </form>
+  <div class="cursor-pointer hover:text-green-500" id="history-data">
+    Check the data you uploaded last time
+  </div>
+</div>
+<script src="../../static/js/stats.js" defer></script>
+{% endblock %}
