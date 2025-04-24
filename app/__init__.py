@@ -7,6 +7,8 @@ from app.models import db, User
 
 migrate = Migrate()
 login_manager = LoginManager()
+login_manager.login_view = 'auth.login'  # 设置登录视图
+login_manager.login_message = '请先登录以访问此页面'  # 设置登录提示消息
 
 
 def create_app():
