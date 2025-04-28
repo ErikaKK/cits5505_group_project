@@ -30,13 +30,19 @@
 
     <!-- Input Field -->
     <div class="border-t p-4">
-      <form id="reply-form" class="flex gap-2">
+      <form id="reply-form" class="flex gap-2" enctype="multipart/form-data">
         <input type="hidden" name="receiver_id" id="receiver-id" />
         <input
           type="text"
           name="message"
           placeholder="Type a reply..."
           class="flex-1 p-2 border rounded-lg"
+        />
+        <input
+          type="file"
+          name="file"
+          id="file-input"
+          class="p-2 border rounded-lg"
         />
         <button
           type="submit"
@@ -88,27 +94,27 @@
     document.getElementById('reply-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
+      const formData = new FormData();
       const receiverId = document.getElementById('receiver-id').value;
       const messageText = this.message.value.trim();
-      console.log(receiverId, messageText);
+      const fileInput = document.getElementById('file-input').files[0];
 
-      if (!messageText) return;
+      formData.append('receiver_id', receiverId);
+      formData.append('message', messageText);
+      if (fileInput) {
+        formData.append('file', fileInput);
+      }
 
       const response = await fetch('/messages/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          receiver_id: receiverId,
-          message: messageText
-        })
+        body: formData,
       });
 
       const result = await response.json();
       if (result.success) {
         alert('Message sent!');
         this.reset();
+        document.getElementById('file-input').value = null;
         location.reload();
       } else {
         alert('Failed to send: ' + result.error);
