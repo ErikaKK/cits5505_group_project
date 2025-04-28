@@ -42,18 +42,23 @@
 
     <!-- Input Field -->
     <div class="border-t p-4">
-      <form id="reply-form" class="flex gap-2" enctype="multipart/form-data">
+      <form
+        id="reply-form"
+        class="flex flex-col gap-2"
+        enctype="multipart/form-data"
+      >
         <input type="hidden" name="receiver_id" id="receiver-id" />
         <input
           type="text"
           name="message"
           placeholder="Type a reply..."
-          class="flex-1 p-2 border rounded-lg"
+          class="p-2 border rounded-lg"
         />
         <input
           type="file"
-          name="file"
-          id="file-input"
+          name="shared_file"
+          id="shared-file"
+          accept=".json"
           class="p-2 border rounded-lg"
         />
         <button
@@ -70,67 +75,100 @@
 <script>
       const messages = {{ messages|tojson }};
 
-      function showMessage(id) {
-        const currentUserId = {{ current_user.id }};
-        const msg = messages.find(m => m.id === id);
-        const detail = document.getElementById('message-detail');
-        const receiverIdInput = document.getElementById('receiver-id');
-        receiverIdInput.value = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+    function showMessage(id) {
+      const msg = messages.find(m => m.id === id);
+      const detail = document.getElementById('message-detail');
+      const receiverIdInput = document.getElementById('receiver-id');
 
-        const createdAt = new Date(msg.created_at);
-        const formattedTime = createdAt.toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+      // Correctly set receiverId based on whether current user is sender or receiver
+      const currentUserId = {{ current_user.id }};
+      receiverIdInput.value = (msg.sender_id === currentUserId) ? msg.receiver_id : msg.sender_id;
 
-        let html = `
-          <h2 class="text-2xl font-bold mb-2">Sender: ${!msg.sender ? "Me" : msg.sender}</h2>
-          <h2 class="text-xl font mb-2">Receiver: ${!msg.sender ? msg.receiver : "Me"}</h2>
-          <p class="text-sm text-gray-500 mb-2">Sent at: ${formattedTime}</p>
-          <p class="mb-4">${msg.message}</p>
+      const createdAt = new Date(msg.created_at);
+      const formattedTime = createdAt.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      let html = `
+        <h2 class="text-2xl font-bold mb-2">Sender: ${!msg.sender ? "Me" : msg.sender}</h2>
+        <h2 class="text-xl font-bold mb-2">Receiver: ${!msg.sender ? msg.receiver : "Me"}</h2>
+        <p class="text-sm text-gray-500 mb-2">Sent at: ${formattedTime}</p>
+        <p class="mb-4">${msg.message}</p>
+      `;
+
+      if (msg.shared_data) {
+        const fields = {
+          conn_country: 'Country',
+          episode_name: 'Episode',
+          episode_show_name: 'Show',
+          master_metadata_track_name: 'Track',
+          master_metadata_album_artist_name: 'Artist',
+          master_metadata_album_album_name: 'Album'
+        };
+
+        const headers = Object.values(fields);
+        const keys = Object.keys(fields);
+
+        let tableHeader = headers.map(h => `<th class="border px-2 py-1">${h}</th>`).join('');
+        let tableRows = msg.shared_data.map(row =>
+          `<tr>${keys.map(key => `<td class="border px-2 py-1">${row[key] !== null ? row[key] : ''}</td>`).join('')}</tr>`
+        ).join('');
+
+        html += `
+          <table class="table-auto border-collapse border w-full text-sm mb-4">
+            <thead><tr>${tableHeader}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
         `;
-
-        if (msg.shared_data) {
-          const rows = msg.shared_data.map(row =>
-            `<tr>${row.map(cell => `<td class="border px-2 py-1">${cell}</td>`).join('')}</tr>`
-          ).join('');
-          html += `<table class="table-auto border-collapse border w-full">${rows}</table>`;
-        }
-
-        detail.innerHTML = html;
       }
 
-      document.getElementById('reply-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
+      detail.innerHTML = html;
+    }
 
-        const formData = new FormData();
-        const receiverId = document.getElementById('receiver-id').value;
-        const messageText = this.message.value.trim();
-        const fileInput = document.getElementById('file-input').files[0];
 
-        formData.append('receiver_id', receiverId);
-        formData.append('message', messageText);
-        if (fileInput) {
-          formData.append('file', fileInput);
-        }
+    document.getElementById('reply-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-        const response = await fetch('/messages/send', {
-          method: 'POST',
-          body: formData,
-        });
+      const receiverId = document.getElementById('receiver-id').value;
+      const messageText = this.message.value.trim();
+      const sharedFile = document.getElementById('shared-file').files[0];
 
-        const result = await response.json();
-        if (result.success) {
-          alert('Message sent!');
-          this.reset();
-          document.getElementById('file-input').value = null;
-          location.reload();
-        } else {
-          alert('Failed to send: ' + result.error);
-        }
+      if (!receiverId) {
+        alert('Please select a conversation or start a new one.');
+        return;
+      }
+
+      if (!messageText && !sharedFile) {
+        alert('You must enter a message or upload a file.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('receiver_id', receiverId);
+      formData.append('message', messageText);
+      if (sharedFile) {
+        formData.append('shared_file', sharedFile);
+      }
+
+      const response = await fetch('/messages/send', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert('Message sent!');
+        const savedReceiverId = receiverId;
+        this.reset();
+        document.getElementById('receiver-id').value = savedReceiverId;
+        location.reload();
+      } else {
+        alert('Failed to send: ' + result.error);
+      }
     });
 
     async function startConversation() {
