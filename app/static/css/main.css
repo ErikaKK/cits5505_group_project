@@ -43,3 +43,12 @@
 .btn.w-auto {
   width: auto;
 }
+
+.swiper-container .swiper-button-next,
+.swiper-container .swiper-button-prev {
+  color: white;
+}
+
+.swiper-container .swiper-pagination-bullet-active {
+  background-color: white;
+}
