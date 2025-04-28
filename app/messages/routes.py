@@ -93,3 +93,21 @@ def send_message():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@bp.route("/messages/find_user", methods=["POST"])
+@login_required
+def find_user():
+    data = request.get_json()
+    email = data.get("email")
+    if not email:
+        return jsonify({"success": False, "error": "Email is required"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"success": False}), 404
+
+    return (
+        jsonify({"success": True, "user_id": user.id, "username": user.username}),
+        200,
+    )
