@@ -28,7 +28,10 @@ document.getElementById('searchForm').addEventListener('submit', async function(
   };
 
   const trackImage = data.tracks[0].album.images[0].url;
-  
+  const callout = document.getElementById('callout');
+  if (!callout.classList.contains("hidden")){
+    callout.classList.toggle("hidden");
+  }
   const result = document.getElementById('result');
   const resultImage = document.getElementById('resultImage');
   const resultInfo = document.getElementById('resultInfo');
@@ -42,6 +45,28 @@ document.getElementById('searchForm').addEventListener('submit', async function(
   }
 } catch (error) {
     console.error('Error fetching data:', error);
+    const callout = document.getElementById('callout');
+    callout.classList.remove("hidden");
   }
 
 });
+
+
+const swiper = new Swiper('.swiper-container', {
+  slidesPerView: 1,
+  spaceBetween: 10,
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+  autoplay: {
+    delay: 4000,
+    disableOnInteraction: false,
+  },
+  loop: true,
+});
+
