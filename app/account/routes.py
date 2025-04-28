@@ -12,7 +12,7 @@ def profile():
     
     if form.validate_on_submit():
         try:
-            # 更新用户信息
+            # Update user information
             if form.first_name.data:
                 current_user.first_name = form.first_name.data
             if form.last_name.data:
@@ -29,7 +29,7 @@ def profile():
             db.session.rollback()
             flash('An error occurred while updating your profile. Please try again.', 'error')
     
-    # 预填充表单数据
+    # Pre-fill form data
     form.first_name.data = current_user.first_name
     form.last_name.data = current_user.last_name
     form.email.data = current_user.email
@@ -46,7 +46,7 @@ def change_password():
         if check_password_hash(current_user.password_hash, password_form.current_password.data):
             current_user.password_hash = generate_password_hash(password_form.new_password.data)
             db.session.commit()
-            flash('密码已更新！', 'success')
+            flash('Password updated!', 'success')
         else:
-            flash('当前密码错误！', 'danger')
+            flash('Current password is incorrect!', 'danger')
     return redirect(url_for('account.profile'))

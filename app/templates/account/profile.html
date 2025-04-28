@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.profile-form');
     const submitButton = document.getElementById('submit-button');
     
-    // 检查表单字段是否有值
+    // Check if form fields have values
     function checkFormFields() {
         const firstName = form.querySelector('#first_name').value;
         const lastName = form.querySelector('#last_name').value;
@@ -248,12 +248,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 监听表单字段变化
+    // Listen for changes in form fields
     form.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', checkFormFields);
     });
     
-    // 初始检查
+    // Initial check
     checkFormFields();
 });
 </script>
