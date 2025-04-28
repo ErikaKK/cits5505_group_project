@@ -1,5 +1,4 @@
-import csv
-import io
+import json
 from flask import jsonify, render_template, request
 from flask_login import login_required, current_user
 from app.models import Message, User
@@ -58,38 +57,56 @@ def show_messages():
 @login_required
 def send_message():
     receiver_id = request.form.get("receiver_id")
-    content = request.form.get("message")
-    file = request.files.get("file")
+    message = request.form.get("message", "")
+    shared_file = request.files.get("shared_file")
 
     if not receiver_id:
-        return jsonify({"success": False, "error": "Missing fields"}), 400
-
-    if not content:
-        content = "Hello, I want to share something with you!"
+        return jsonify({"success": False, "error": "Missing receiver_id"}), 400
 
     shared_data = None
-    if file:
+
+    if shared_file:
         try:
-            # Read file and parse CSV
-            stream = io.StringIO(file.stream.read().decode("utf-8"))
-            csv_reader = csv.reader(stream)
-            shared_data = [row for row in csv_reader]
+            shared_data = json.load(shared_file)
         except Exception as e:
             return (
-                jsonify({"success": False, "error": f"Invalid CSV file: {str(e)}"}),
+                jsonify({"success": False, "error": f"Invalid JSON file: {str(e)}"}),
                 400,
             )
 
     try:
+        receiver_user = User.query.get(receiver_id)
+        if not receiver_user:
+            return jsonify({"success": False, "error": "Receiver not found"}), 404
+
         msg = Message(
             sender_id=current_user.id,
-            receiver_id=int(receiver_id),
-            message=content,
+            receiver_id=receiver_user.id,
+            message=message,
             shared_data=shared_data,
         )
         db.session.add(msg)
         db.session.commit()
-        return jsonify({"success": True, "message": "Message sent!"}), 200
+
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "message_obj": {
+                        "id": msg.id,
+                        "sender_id": msg.sender_id,
+                        "receiver_id": msg.receiver_id,
+                        "sender": None,
+                        "receiver": receiver_user.username,
+                        "message": msg.message,
+                        "created_at": msg.created_at,
+                        "shared_data": shared_data,
+                    },
+                }
+            ),
+            200,
+        )
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
