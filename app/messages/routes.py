@@ -1,3 +1,5 @@
+import csv
+import io
 from flask import jsonify, render_template, request
 from flask_login import login_required, current_user
 from app.models import Message, User
@@ -55,10 +57,9 @@ def show_messages():
 @bp.route("/messages/send", methods=["POST"])
 @login_required
 def send_message():
-    data = request.get_json()
-
-    receiver_id = data.get("receiver_id")
-    content = data.get("message")
+    receiver_id = request.form.get("receiver_id")
+    content = request.form.get("message")
+    file = request.files.get("file")
 
     if not receiver_id:
         return jsonify({"success": False, "error": "Missing fields"}), 400
@@ -66,12 +67,25 @@ def send_message():
     if not content:
         content = "Hello, I want to share something with you!"
 
+    shared_data = None
+    if file:
+        try:
+            # Read file and parse CSV
+            stream = io.StringIO(file.stream.read().decode("utf-8"))
+            csv_reader = csv.reader(stream)
+            shared_data = [row for row in csv_reader]
+        except Exception as e:
+            return (
+                jsonify({"success": False, "error": f"Invalid CSV file: {str(e)}"}),
+                400,
+            )
+
     try:
         msg = Message(
-            sender_id=current_user.id, receiver_id=receiver_id, message=content
-        )
-        print(
-            f"Sender ID: {current_user.id}, Receiver ID: {receiver_id}, Message: {content}"
+            sender_id=current_user.id,
+            receiver_id=int(receiver_id),
+            message=content,
+            shared_data=shared_data,
         )
         db.session.add(msg)
         db.session.commit()
