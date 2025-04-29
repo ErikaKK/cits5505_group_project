@@ -10,6 +10,6 @@ class ProfileForm(FlaskForm):
     terms = BooleanField('Terms', validators=[DataRequired()])
 
 class PasswordForm(FlaskForm):
-    current_password = PasswordField('当前密码', validators=[DataRequired()])
-    new_password = PasswordField('新密码', validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('确认新密码', validators=[DataRequired(), EqualTo('new_password')])
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
