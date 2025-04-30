@@ -1,25 +1,39 @@
 {% extends "/auth/auth.html" %} {% block addtional_content %}
 <div class="flex justify-center p-4">
-  <div class="flex justify-center items-center flex-col w-min border border-gray-200 p-20 gap-6">
+  <div
+    class="flex justify-center items-center flex-col p-4 sm:p-20 border border-gray-200 gap-6"
+  >
     <h1 class="text-4xl font-bold">Sign In</h1>
-    <form action="" method="post" novalidate class="flex flex-col gap-4">
+    <form
+      action="{{ url_for('auth.login') }}"
+      method="post"
+      novalidate
+      class="flex flex-col gap-4"
+    >
       {{ form.hidden_tag() }}
-      <p>
-        {{ form.email.label(class_="form-label") }}
-        {{ form.email(class_="form-control", size=32) }} {% for error in form.email.errors %}
+      <div>
+        {{ form.email.label(class_="form-label") }} {{
+        form.email(class_="form-control", size=32) }} {% for error in
+        form.email.errors %}
         <p style="color: red">[{{ error }}]</p>
         {% endfor %}
-      </p>
-      <p>
-        {{ form.password.label(class_="form-label") }}
-        {{ form.password(class_="form-control", size=32) }} {% for error in form.password.errors %}
+      </div>
+      <div>
+        {{ form.password.label(class_="form-label") }} {{
+        form.password(class_="form-control", size=32, autocomplete="password")
+        }} {% for error in form.password.errors %}
         <p style="color: red">[{{ error }}]</p>
         {% endfor %}
-      </p>
-      <p>{{ form.remember_me(class_="cursor-pointer") }} {{ form.remember_me.label(class_="cursor-pointer") }}</p>
-      <p >{{ form.submit(class_="btn") }}</p>
+      </div>
+      <div>
+        {{ form.remember_me(class_="cursor-pointer") }} {{
+        form.remember_me.label(class_="cursor-pointer") }}
+      </div>
+      {{ form.submit(class_="btn") }}
     </form>
-    <a href="{{ url_for('auth.register') }}" class="hover:text-blue-500">New User? Click to Register!</a>
+    <a href="{{ url_for('auth.register') }}" class="hover:text-blue-500"
+      >New User? Click to Register!</a
+    >
   </div>
 </div>
 {% endblock %}

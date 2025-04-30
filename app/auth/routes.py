@@ -51,7 +51,7 @@ def register():
                 "Username or email already exists. Please choose a different one.",
                 "danger",
             )
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("auth.register"))
 
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
