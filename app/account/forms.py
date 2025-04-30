@@ -8,6 +8,7 @@ class ProfileForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Optional(), Length(min=6)])
     terms = BooleanField('Terms', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired(), Length(max=50)])
 
 class PasswordForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[DataRequired()])

@@ -13,6 +13,8 @@ def profile():
     if form.validate_on_submit():
         try:
             # Update user information
+            if form.username.data:
+                current_user.username = form.username.data
             if form.first_name.data:
                 current_user.first_name = form.first_name.data
             if form.last_name.data:
@@ -30,6 +32,7 @@ def profile():
             flash('An error occurred while updating your profile. Please try again.', 'error')
     
     # Pre-fill form data
+    form.username.data = current_user.username
     form.first_name.data = current_user.first_name
     form.last_name.data = current_user.last_name
     form.email.data = current_user.email

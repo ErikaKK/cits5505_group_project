@@ -14,7 +14,7 @@ class User(UserMixin, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), index=True, unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    bio: so.Mapped[Optional[str]] = so.mapped_column(sa.String(200), nullable=True)
+    # bio: so.Mapped[Optional[str]] = so.mapped_column(sa.String(200), nullable=True)
     first_name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))
     last_name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))
 
