@@ -18,7 +18,7 @@ This project requires **Python 3.9.18**. Please ensure you're using this version
 ### Clone the Repository
 
 ```bash
-git clone git@github.com:ErikaKK/groupProject.git yourProjectDirectory
+git clone git@github.com:iviiincent/cits5505_group_project.git yourProjectDirectory
 ```
 
 ### Navigate to the Project Directory
@@ -113,3 +113,4 @@ flask db upgrade
 - [https://fonts.google.com/icons](https://fonts.google.com/icons")
 - [https://rapidapi.com/Glavier/api/spotify23](https://rapidapi.com/Glavier/api/spotify23)
 - [https://swiperjs.com/get-started](https://swiperjs.com/get-started)
+
