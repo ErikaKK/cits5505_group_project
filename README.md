@@ -109,5 +109,8 @@ flask db upgrade
 ## References
 
 - [https://jinja.palletsprojects.com/en/stable/templates/](https://jinja.palletsprojects.com/en/stable/templates/)
-- [https://developer.spotify.com/](https://developer.spotify.com/)
+- [https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
 - [https://fonts.google.com/icons](https://fonts.google.com/icons")
+- [https://rapidapi.com/Glavier/api/spotify23](https://rapidapi.com/Glavier/api/spotify23)
+- [https://swiperjs.com/get-started](https://swiperjs.com/get-started)
+

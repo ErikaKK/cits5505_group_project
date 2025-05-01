@@ -12,7 +12,7 @@ from app.models import User
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index", login=current_user.is_authenticated))
+        return redirect(url_for("account.profile", login=current_user.is_authenticated))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.email == form.email.data))
@@ -20,7 +20,7 @@ def login():
             flash("Invalid username or password", "error")
             return redirect(url_for("auth.login", login=current_user.is_authenticated))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("main.index", login=current_user.is_authenticated))
+        return redirect(url_for("account.profile", login=current_user.is_authenticated))
 
     return render_template(
         "/auth/login.html",

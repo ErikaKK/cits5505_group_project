@@ -16,6 +16,10 @@
   border: 1px solid #f2f4f8;
   border-bottom: 1px solid #c1c7cd;
 }
+
+.form-control.flex {
+  display: flex;
+}
 .form-control:focus {
   border: 1px solid #c1c7cd;
   background-color: white;
@@ -30,4 +34,21 @@
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.btn:hover {
+  background: #2b7eff;
+}
+
+.btn.w-auto {
+  width: auto;
+}
+
+.swiper-container .swiper-button-next,
+.swiper-container .swiper-button-prev {
+  color: white;
+}
+
+.swiper-container .swiper-pagination-bullet-active {
+  background-color: white;
 }
