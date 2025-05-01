@@ -7,6 +7,8 @@ from app.models import db, User
 
 migrate = Migrate()
 login_manager = LoginManager()
+login_manager.login_view = 'auth.login'  # Set the login view
+login_manager.login_message = 'Please log in to access this page'  # Set the login prompt message
 
 
 def create_app():
@@ -24,10 +26,11 @@ def create_app():
 
     with app.app_context():
         # Register blueprints
-        from . import auth, main, account
+        from . import auth, main, account, messages
 
         app.register_blueprint(auth.bp)
         app.register_blueprint(main.bp)
         app.register_blueprint(account.bp)
+        app.register_blueprint(messages.bp)
 
     return app

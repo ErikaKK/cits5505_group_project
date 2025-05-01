@@ -1,5 +1,6 @@
 from typing import Optional
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
@@ -14,6 +15,8 @@ class User(UserMixin, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), index=True, unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    first_name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))
+    last_name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -23,3 +26,17 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return "<User {}>".format(self.username)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.String, default=lambda: datetime.utcnow().isoformat())
+    shared_data = db.Column(db.JSON, nullable=True)
+
+    def __repr__(self):
+        return "<Message from {} to {} at {}: {}>".format(
+            self.sender_id, self.receiver_id, self.created_at, self.message
+        )

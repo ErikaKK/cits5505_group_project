@@ -1,3 +1,28 @@
+.success {
+  color: #025700;
+  background-color: #d4edda;
+  border: 1px solid #d4edda;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+.error {
+  color: #fa4856;
+  background-color: #f8d7da;
+  border: 1px solid #f8d7da;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+.danger {
+  color: #af3f00;
+  background-color: #fff2e5;
+  border: 1px solid #fff2e5;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
 .form-label {
   display: block;
   font-size: 16px;
@@ -7,19 +32,38 @@
 }
 
 .form-control {
+  width: 100%;
   display: block;
-  padding: 8px;
+  padding: 12px 16px;
   font-size: 16px;
   font-weight: 600;
   color: #697077;
   background-color: #f2f4f8;
-  border: 1px solid #f2f4f8;
-  border-bottom: 1px solid #c1c7cd;
-}
-.form-control:focus {
+  line-height: 1.4;
   border: 1px solid #c1c7cd;
+  border-radius: 4px;
+}
+
+.form-control:focus {
+  border-color: #0f62fe;
   background-color: white;
   outline: none;
+}
+
+#searchForm {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #697077;
+  background-color: #f2f4f8;
+  line-height: 1.4;
+  border: 1px solid #c1c7cd;
+  border-radius: 4px;
+}
+
+#searchInput:focus #searchForm {
+  border-color: #0f62fe;
+  background-color: white;
 }
 
 .btn {
@@ -30,4 +74,28 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  border: 1px solid #0f62fe;
+  border-radius: 4px;
+}
+
+.btn:hover {
+  background: #2b7eff;
+}
+
+.btn.w-auto {
+  width: auto;
+}
+
+.swiper-container .swiper-button-next,
+.swiper-container .swiper-button-prev {
+  color: white;
+}
+
+.swiper-container .swiper-pagination-bullet-active {
+  background-color: white;
+}
+
+#searchForm.focused {
+  border-color: #0f62fe;
+  background-color: white;
 }

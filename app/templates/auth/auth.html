@@ -1,47 +1,5 @@
-{% extends "base.html" %} {% block content %}
-<div class="flex justify-between items-center px-4 md:px-20 bg-gray-100">
-  <button
-    type="button"
-    class="inline-flex items-center w-10 h-10 justify-center text-sm text-green-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-    id="account-menu-toggle"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="24px"
-      viewBox="0 -960 960 960"
-      width="24px"
-      fill="#1f1f1f"
-    >
-      <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
-    </svg>
-  </button>
-  <div
-    class="hidden fixed flex justify-center items-center z-9999 top-0 left-0 w-auto pl-4 pr-20 h-screen md:relative md:p-0 md:h-auto bg-gray-100 md:block"
-    id="account-menu"
-  >
-    <div
-      class="flex flex-col md:gap-4 justify-center items-start md:flex-row"
-      id="account-menu-items"
-    >
-      <a
-        href="{{ url_for('account.profile') }}"
-        class="py-2 hover:text-green-500"
-        >Profile</a
-      >
-      <a href="" class="py-2 hover:text-green-500">Dashboard</a>
-
-      <a href="/messages" class="py-2 hover:text-green-500">Messages</a>
-    </div>
-  </div>
-  <a
-    href="{{ url_for('auth.logout') }}"
-    class="hover:text-green-500"
-    id="logout"
-    >Logout</a
-  >
-</div>
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
-%}
+{% extends "base.html" %} {% block content %} {% with messages =
+get_flashed_messages(with_categories=true) %} {% if messages %}
 <ul class="flex flex-col justify-center items-start m-4 mb-0 md:mx-20 gap-4">
   {% for category,message in messages %}
   <li class="{{ category }}">
@@ -89,6 +47,5 @@
   </li>
   {% endfor %}
 </ul>
-{% endif %} {% endwith %} {% block addtional_content %}{% endblock %}
-<script src="../static/js/account.js" defer></script>
-{% endblock %}
+{% endif %} {% endwith %}{% block addtional_content %}{% endblock %} {% endblock
+%}
