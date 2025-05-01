@@ -70,3 +70,13 @@ const swiper = new Swiper('.swiper-container', {
   loop: true,
 });
 
+const input = document.getElementById("searchInput");
+const form = document.getElementById("searchForm");
+
+input.addEventListener("focus", () => {
+  form.classList.add("focused");
+});
+
+input.addEventListener("blur", () => {
+  form.classList.remove("focused");
+});
