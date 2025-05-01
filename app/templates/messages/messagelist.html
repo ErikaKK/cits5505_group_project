@@ -272,5 +272,31 @@
       }
     });
   }
+
+  async function startConversation() {
+    const email = prompt("Enter the receiver's email:");
+    if (!email) return;
+
+    const response = await fetch('/messages/find_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      document.getElementById('receiver-id').value = result.user_id;
+      document.getElementById('message-detail').innerHTML = `
+        <div class="text-center p-4 animate-fadeIn">
+          <h2 class="text-2xl font-bold mb-2">New Conversation with ${result.username}</h2>
+          <p class="text-gray-500 mb-2">Start typing your message below!</p>
+        </div>
+      `;
+    } else {
+      alert('User not found!');
+    }
+  }
 </script>
 {% endblock %}
