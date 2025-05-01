@@ -22,7 +22,6 @@ def profile():
 
     if form.validate_on_submit():
         try:
-            # Update user information
             print(form.username.data, current_user.username)
             print(form.first_name.data, current_user.first_name)
             print(form.last_name.data, current_user.last_name)
