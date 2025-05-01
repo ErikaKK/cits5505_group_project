@@ -203,48 +203,6 @@
       `;
     }
 
-    document.getElementById('reply-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const receiverId = document.getElementById('receiver-id').value;
-      const messageText = this.message.value.trim();
-      const sharedFile = document.getElementById('shared-file').files[0];
-
-      if (!receiverId) {
-        alert('Please select a conversation or start a new one.');
-        return;
-      }
-
-      if (!messageText && !sharedFile) {
-        alert('You must enter a message or upload a file.');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('receiver_id', receiverId);
-      formData.append('message', messageText);
-      if (sharedFile) {
-        formData.append('shared_file', sharedFile);
-      }
-
-      const response = await fetch('/messages/send', {
-        method: 'POST',
-        body: formData
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        alert('Message sent!');
-        const savedReceiverId = receiverId;
-        this.reset();
-        document.getElementById('receiver-id').value = savedReceiverId;
-        location.reload();  // Reload the page to show the new message
-      } else {
-        alert('Failed to send: ' + result.error);
-      }
-    });
-
-
     // Animate fade-in
     detail.style.opacity = 0;
     setTimeout(() => {
@@ -252,5 +210,46 @@
       detail.style.opacity = 1;
     }, 100);
   }
+
+  document.getElementById('reply-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const receiverId = document.getElementById('receiver-id').value;
+    const messageText = this.message.value.trim();
+    const sharedFile = document.getElementById('shared-file').files[0];
+
+    if (!receiverId) {
+      alert('Please select a conversation or start a new one.');
+      return;
+    }
+
+    if (!messageText && !sharedFile) {
+      alert('You must enter a message or upload a file.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('receiver_id', receiverId);
+    formData.append('message', messageText);
+    if (sharedFile) {
+      formData.append('shared_file', sharedFile);
+    }
+
+    const response = await fetch('/messages/send', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert('Message sent!');
+      const savedReceiverId = receiverId;
+      this.reset();
+      document.getElementById('receiver-id').value = savedReceiverId;
+      location.reload();  // Reload the page to show the new message
+    } else {
+      alert('Failed to send: ' + result.error);
+    }
+  });
 </script>
 {% endblock %}
