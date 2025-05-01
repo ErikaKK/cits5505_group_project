@@ -8,13 +8,18 @@
       href="{{url_for('static', filename='css/main.css')}}"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <title>{{ title }} - Group Project</title>
   </head>
   <body class="flex flex-col min-h-screen">
     <nav
       class="h-20 flex justify-between items-center px-4 md:px-20 bg-white border-b-2 border-gray-200"
     >
-      <a href="{{ url_for('main.index') }}"> CITS5505 Group Project </a>
+      <a href="{{ url_for('main.index') }}" class="text-2xl"> SpotifyDash </a>
       <button
         type="button"
         class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-green-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -41,12 +46,14 @@
         id="navbar-menu"
       >
         <div
-          class="flex flex-col md:gap-4 justify-center items-center md:flex-row"
+          class="flex flex-col gap-4 md:gap-6 justify-center items-center md:flex-row"
           id="navbar-menu-items"
         >
-          <a href="" class="py-2 hover:text-green-500">Tracks</a
-          ><a href="" class="py-2 hover:text-green-500">Artists</a
-          ><a href="" class="py-2 hover:text-green-500">Genres</a>
+          <a
+            href="{{ url_for('main.index') }}"
+            class="py-2 hover:text-green-500"
+            >Home</a
+          >
           {% if login |default(false)%}
           <a
             href="{{ url_for('account.profile') }}"
@@ -65,21 +72,44 @@
         </div>
       </div>
     </nav>
-    {% block content %}{% endblock %}
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul
+      class="flex flex-col justify-center items-start bg-gray-100 border-2 border-gray-200 m-4 mb-0 md:mx-20 p-4 gap-4"
+    >
+      {% for message in messages %}
+      <li class="flex items-center justify-center gap-2">
+        <span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#1f1f1f"
+          >
+            <path
+              d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240ZM330-120 120-330v-300l210-210h300l210 210v300L630-120H330Zm34-80h232l164-164v-232L596-760H364L200-596v232l164 164Zm116-280Z"
+            /></svg></span
+        >{{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
 
     <footer class="flex flex-col bg-gray-500 text-white px-4 md:px-20 mt-auto">
       <div
         class="flex justify-between items-center py-6 border-b flex-col md:flex-row gap-4"
       >
-        <a href="/"> CITS5505 Group Project </a>
+        <a href="{{ url_for('main.index') }}" class="text-2xl"> SpotifyDash </a>
         <div class="flex md:gap-4 items-center flex-col md:flex-row">
-          <a href="" class="py-2 hover:text-green-500">Tracks</a
-          ><a href="" class="py-2 hover:text-green-500">Artists</a
-          ><a href="" class="py-2 hover:text-green-500">Genres</a>
+          <a
+            href="{{ url_for('main.index') }}"
+            class="py-2 hover:text-green-500"
+            >Home</a
+          >
         </div>
       </div>
-      <div class="flex justify-center items-center py-6">
-        <p>Group 64 @ 2025. All rights reserved.</p>
+      <div class="flex justify-center items-center mb-6">
+        <p>CITS5505 Group Project - Group 64 @ 2025. All rights reserved.</p>
       </div>
     </footer>
     <script src="../static/js/main.js" defer></script>

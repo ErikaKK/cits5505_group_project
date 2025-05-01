@@ -26,10 +26,11 @@ def create_app():
 
     with app.app_context():
         # Register blueprints
-        from . import auth, main, account
+        from . import auth, main, account, messages
 
         app.register_blueprint(auth.bp)
         app.register_blueprint(main.bp)
         app.register_blueprint(account.bp)
+        app.register_blueprint(messages.bp)
 
     return app

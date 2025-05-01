@@ -1,3 +1,118 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Template</h1>
+<div
+  class="py-10 bg-blue-500 text-white w-full h-160 md:h-100 relative swiper-container overflow-hidden"
+>
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+      <div
+        class="flex flex-col gap-4 items-center h-full justify-center mx-11 lg:mx-50"
+      >
+        <p class="text-4xl text-center">🎵 Welcome to SpotifyDash 🎵</p>
+        <p class="text-3xl text-center">
+          Discover your Spotify listening habits like never before!
+        </p>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div
+        class="flex flex-col items-center gap-4 h-full justify-center mx-11 lg:mx-50"
+      >
+        <p class="text-3xl">
+          Upload your personal Spotify listening history and transform it into
+          an interactive dashboard with rich insights:
+        </p>
+        <ul class="text-2xl">
+          <li>
+            ⏰ See your average listening time across each hour of the day.
+          </li>
+          <li>
+            🎤 Find your Top 5 artists and Top 5 tracks based on minutes played.
+          </li>
+          <li>📅 Explore how your listening patterns change across months.</li>
+          <li>
+            📊 Filter and dive deeper into your data by selecting specific
+            months.
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div
+        class="flex flex-col gap-4 h-full items-center justify-center mx-11 lg:mx-50"
+      >
+        <div class="text-3xl">Connect and Share:</div>
+        <p class="text-2xl">
+          Registered users can securely share their listening analytics with
+          other users via email address, view others' dashboards that are
+          shared, and even exchange messages through our platform.
+        </p>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div
+        class="flex flex-col gap-4 items-center h-full justify-center mx-11 lg:mx-50"
+      >
+        <div class="text-3xl">Quick Search:</div>
+        <p class="text-2xl">
+          Not ready to register? No problem! You can search for any song's
+          information instantly by entering its Spotify ID.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Add Pagination -->
+  <div class="swiper-pagination"></div>
+
+  <!-- Add Navigation -->
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+</div>
+
+<div class="py-10 flex flex-col items-center gap-4">
+  <h1 class="text-3xl bold">Search a song by Spotify track ID</h1>
+  <form id="searchForm" class="form-control flex justify-between items-center">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search for a song..."
+      class="outline-none"
+      size="30"
+      required
+    />
+
+    <button type="submit" class="cursor-pointer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#1f1f1f"
+      >
+        <path
+          d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"
+        />
+      </svg>
+    </button>
+  </form>
+  <p class="text-red-500 hidden" id="callout">
+    Please enter correct Spotify ID!
+  </p>
+</div>
+<div class="flex items-center justify-center mb-10 hidden" id="result">
+  <div
+    class="w-fit flex flex-col gap-4 p-4 items-center justify-center md:flex-row border-2 rounded-lg"
+  >
+    <img
+      src=""
+      alt="The image of the album"
+      id="resultImage"
+      class="w-80 h-80"
+    />
+    <div id="resultInfo" class="flex flex-col gap-4"></div>
+  </div>
+</div>
+<div class="flex mb-6 items-center justify-center">
+  <a href="/login" class="btn w-auto">Explore More</a>
+</div>
+<script src="../static/js/index.js" defer></script>
 {% endblock %}
