@@ -131,7 +131,8 @@
     const currentUserId = {{ current_user.id }};
     receiverIdInput.value = (msg.sender_id === currentUserId) ? msg.receiver_id : msg.sender_id;
 
-    const createdAt = new Date(msg.created_at);
+    let isoString = msg.created_at + 'Z';
+    const createdAt = new Date(isoString);
     const formattedTime = createdAt.toLocaleString(undefined, {
       year: 'numeric',
       month: 'short',
@@ -139,7 +140,7 @@
       hour: '2-digit',
       minute: '2-digit',
       second:"2-digit",
-      hour12: true
+      hour12: true,
     });
 
     let html = `
