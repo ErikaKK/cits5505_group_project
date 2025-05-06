@@ -111,5 +111,5 @@ def change_password():
 @login_required
 def upload():
     return render_template(
-        "/account/upload.html", title="My Account", login=current_user.is_authenticated
+        "/account/upload.html", title="Upload", login=current_user.is_authenticated
     )
