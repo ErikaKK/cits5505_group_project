@@ -1,0 +1,70 @@
+{% extends "/account/account.html" %} {% block addtional_content %}
+<div class="flex flex-col justify-center items-center my-20 gap-6">
+  <p class="text-4xl font-bold">Upload your streaming history from Spotify</p>
+
+  <div class="p-6 pt-8 border border-gray-200 min-w-90">
+    <input
+      type="file"
+      name="json_file"
+      accept=".json"
+      class="hidden"
+      id="fileInput"
+    />
+    <label
+      for="fileInput"
+      class="cursor-pointer bg-green-500 text-white border border-green-500 p-2 rounded-sm w-full block text-center"
+      id="fileLabel"
+      >Upload (JSON format)
+    </label>
+    <button type="submit" class="btn mt-4" id="upload-btn">See Insights</button>
+  </div>
+
+  <!-- <button onclick="checkDataInIndexedDB()" class="btn">
+      Check IndexedDB Data
+    </button>
+   -->
+  <div id="status"></div>
+</div>
+<div class="md:px-20 my-4">
+  <h1 class="text-4xl">How to get your streaming history from Spotify?</h1>
+  <h2 class="text-2xl mt-4 mb-2">1. Request your data from Spotify</h2>
+  <p>
+    In order to request the extended streaming history files, simply press the
+    correct buttons on the Spotify website.
+  </p>
+  <ol></ol>
+  <li>To get started, open the Privacy page on the Spotify website.</li>
+
+  <li>Scroll down to the "Download your data" section.</li>
+
+  <li>
+    Configure the page so it looks like the screenshot below (Unticked the
+    "Account data" and ticked the "Extended streaming history" boxes).
+  </li>
+  <img
+    src="../static/src/privacy-step3.webp"
+    alt="A screenshot"
+    class="w-full sm:max-w-120"
+  />
+  <h2 class="text-2xl mt-4 mb-2">2. Confirm your request</h2>
+  <p>
+    As soon as your request is accepted by Spotify, you'll receive a link to
+    confirm the request in your email. Confirm it, and Spotify will start
+    gathering your data.
+  </p>
+  <img
+    src="../static/src/step2.webp"
+    alt="A screenshot"
+    class="w-full sm:max-w-200"
+  />
+  <h2 class="text-2xl mt-4 mb-2">4. Wait until you receive your data</h2>
+  <p>This can take a while. You'll receive a .ZIP file in your email.</p>
+  <h2 class="text-2xl mt-4 mb-2">5. Download and extract the files</h2>
+  <p>
+    Once your data is ready to download, you'll get an email with a link to
+    download a .ZIP file. You need to extract this file to get the .JSON file
+    that is required to be uploaded here.
+  </p>
+</div>
+<script src="../../static/js/upload.js" defer></script>
+{% endblock %}

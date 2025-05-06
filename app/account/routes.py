@@ -107,9 +107,9 @@ def change_password():
     )
 
 
-@bp.route("/stats")
+@bp.route("/upload")
 @login_required
-def stats():
+def upload():
     return render_template(
-        "/account/stats.html", title="My Account", login=current_user.is_authenticated
+        "/account/upload.html", title="My Account", login=current_user.is_authenticated
     )
