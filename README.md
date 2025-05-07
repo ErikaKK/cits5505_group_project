@@ -113,4 +113,4 @@ flask db upgrade
 - [https://fonts.google.com/icons](https://fonts.google.com/icons")
 - [https://rapidapi.com/Glavier/api/spotify23](https://rapidapi.com/Glavier/api/spotify23)
 - [https://swiperjs.com/get-started](https://swiperjs.com/get-started)
-
+- [https://support.stats.fm/docs/import/spotify-import](https://support.stats.fm/docs/import/spotify-import)
