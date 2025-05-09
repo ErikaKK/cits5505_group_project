@@ -21,3 +21,26 @@ document.getElementById('account-menu-toggle').addEventListener('click', functio
         hideAccountMenu(event);
     }
 });
+
+document.getElementById('logout').addEventListener('click',deleteDatabase);
+// Function to delete the database for a fresh start
+function deleteDatabase() {
+    const dbName = "MyDatabase";
+    
+    if (confirm("Are you sure to log out?")) {
+       
+        console.log(`Attempting to delete database: ${dbName}`);
+        
+        const deleteRequest = indexedDB.deleteDatabase(dbName);
+        
+        deleteRequest.onsuccess = function() {
+            console.log(`Database "${dbName}" deleted successfully`);
+           
+        };
+        
+        deleteRequest.onerror = function(event) {
+            console.error("Error deleting database:", event.target.error);
+           
+        };
+    }
+}

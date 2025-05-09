@@ -28,12 +28,22 @@
         class="py-2 hover:text-green-500"
         >Profile</a
       >
+      <a
+        href="{{ url_for('account.upload') }}"
+        class="py-2 hover:text-green-500"
+        >Upload</a
+      >
       <a href="" class="py-2 hover:text-green-500">Dashboard</a>
 
       <a href="/messages" class="py-2 hover:text-green-500">Messages</a>
     </div>
   </div>
-  <a href="{{ url_for('auth.logout') }}" class="hover:text-green-500">Logout</a>
+  <a
+    href="{{ url_for('auth.logout') }}"
+    class="hover:text-green-500"
+    id="logout"
+    >Logout</a
+  >
 </div>
 {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
 %}

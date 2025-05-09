@@ -105,3 +105,11 @@ def change_password():
         login=current_user.is_authenticated,
         form=password_form,
     )
+
+
+@bp.route("/upload")
+@login_required
+def upload():
+    return render_template(
+        "/account/upload.html", title="Upload", login=current_user.is_authenticated
+    )
