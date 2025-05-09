@@ -3,18 +3,21 @@ from config import Config
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from app.models import db, User
-
+from flask_wtf.csrf import CSRFProtect
 
 migrate = Migrate()
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'  # Set the login view
-login_manager.login_message = 'Please log in to access this page'  # Set the login prompt message
+login_manager.login_view = "auth.login"  # Set the login view
+login_manager.login_message = (
+    "Please log in to access this page"  # Set the login prompt message
+)
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    csrf = CSRFProtect(app)
+    # csrf._exempt_views.add("dash.dash.dispatch")
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -26,11 +29,16 @@ def create_app():
 
     with app.app_context():
         # Register blueprints
-        from . import auth, main, account, messages
+        from . import auth, main, account, messages, dashboard
 
         app.register_blueprint(auth.bp)
         app.register_blueprint(main.bp)
         app.register_blueprint(account.bp)
         app.register_blueprint(messages.bp)
+        app.register_blueprint(dashboard.dashboard_bp)
+
+        from .dashboard import init_dashboard
+
+        dash_app = init_dashboard(app)
 
     return app

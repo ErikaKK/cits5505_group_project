@@ -1,0 +1,11 @@
+{% extends "/account/account.html" %} {% block addtional_content %}
+<div class="visualization-container">
+  <h3>Spotify Data Visualization</h3>
+  <div id="status-message"></div>
+  <button id="loadDashboard" class="btn">Visualize My Spotify Data</button>
+</div>
+<div id="dashboardContainer"></div>
+
+<script src="../static/js/dash.js" defer></script>
+
+{% endblock %}

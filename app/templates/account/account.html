@@ -28,7 +28,11 @@
         class="py-2 hover:text-green-500"
         >Profile</a
       >
-      <a href="" class="py-2 hover:text-green-500">Dashboard</a>
+      <a
+        href="{{ url_for('account.dashboard') }}"
+        class="py-2 hover:text-green-500"
+        >Dashboard</a
+      >
 
       <a href="/messages" class="py-2 hover:text-green-500">Messages</a>
     </div>
