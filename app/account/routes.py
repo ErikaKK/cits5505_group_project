@@ -123,6 +123,14 @@ def change_password():
     )
 
 
+@bp.route("/upload")
+@login_required
+def upload():
+    return render_template(
+        "/account/upload.html", title="Upload", login=current_user.is_authenticated
+    )
+
+
 from functools import wraps
 from werkzeug.serving import is_running_from_reloader
 import signal
@@ -168,7 +176,7 @@ def dashboard():
             # Get JSON data directly from request
             data = request.get_json()
 
-            # Create visualization
+            # Create visualisation
             viz = Visualisation()
 
             # Create a BytesIO object to store the image
@@ -201,11 +209,11 @@ def dashboard():
             table["time"] = table["timestamp"].dt.time
             table["hour"] = table["timestamp"].dt.hour
 
-            # Create the visualization
+            # Create the visualisation
             figure, axis = pyplot.subplots(2, 2, figsize=(14, 10), facecolor="white")
             axis = axis.flatten()
 
-            # Set table attribute for visualization methods
+            # Set table attribute for visualisation methods
             viz.table = table
 
             # Generate charts
@@ -229,11 +237,3 @@ def dashboard():
         except Exception as e:
             print(f"Error in dashboard route: {e}")
             return jsonify({"error": str(e)}), 500
-
-
-@bp.route("/upload")
-@login_required
-def upload():
-    return render_template(
-        "/account/upload.html", title="Upload", login=current_user.is_authenticated
-    )

@@ -1,38 +1,66 @@
 import pandas as pd
 import json
+import matplotlib
+
+matplotlib.use("Agg")  # Set the backend to Agg before importing pyplot
 import matplotlib.pyplot as pyplot
 
 
 class Visualisation:
     def visualise_data(self, json_file_location):
-        file = open(json_file_location, "r", encoding="utf-8")
-        columns = json.load(file)
-        table = pd.DataFrame(columns)
-        table = table[
-            [
+        try:
+            with open(json_file_location, "r", encoding="utf-8") as file:
+                columns = json.load(file)
+
+            if not columns:
+                raise ValueError("Empty JSON file")
+
+            table = pd.DataFrame(columns)
+
+            # Check if required columns exist
+            required_columns = [
                 "ts",
                 "ms_played",
                 "master_metadata_track_name",
                 "master_metadata_album_artist_name",
             ]
-        ]
-        table = table.rename(
-            columns={
-                "ts": "timestamp",
-                "master_metadata_track_name": "track_name",
-                "master_metadata_album_artist_name": "artist_name",
-            }
-        )
-        table["timestamp"] = pd.to_datetime(table["timestamp"])
-        table["mins_played"] = table["ms_played"].apply(lambda x: round(x / 60000, 4))
-        table["hours_played"] = table["ms_played"].apply(
-            lambda x: round(x / 3600000, 4)
-        )
-        table["time"] = table["timestamp"].dt.time
-        table["hour"] = table["timestamp"].dt.hour
+            missing_columns = [
+                col for col in required_columns if col not in table.columns
+            ]
+            if missing_columns:
+                raise ValueError(f"Missing required columns: {missing_columns}")
 
-        self.table = table
-        self.display_dashboard()
+            table = table[
+                [
+                    "ts",
+                    "ms_played",
+                    "master_metadata_track_name",
+                    "master_metadata_album_artist_name",
+                ]
+            ]
+            table = table.rename(
+                columns={
+                    "ts": "timestamp",
+                    "master_metadata_track_name": "track_name",
+                    "master_metadata_album_artist_name": "artist_name",
+                }
+            )
+            table["timestamp"] = pd.to_datetime(table["timestamp"])
+            table["mins_played"] = table["ms_played"].apply(
+                lambda x: round(x / 60000, 4)
+            )
+            table["hours_played"] = table["ms_played"].apply(
+                lambda x: round(x / 3600000, 4)
+            )
+            table["time"] = table["timestamp"].dt.time
+            table["hour"] = table["timestamp"].dt.hour
+
+            self.table = table
+            self.display_dashboard()
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON file: {e}")
+        except Exception as e:
+            raise Exception(f"Error processing data: {e}")
 
     def top_artists_chart(self, axis):
         artists_played = self.table.groupby("artist_name")["mins_played"].sum()

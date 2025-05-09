@@ -44,18 +44,20 @@ function handleFileUpload() {
             
             if (isValid) {
                 // Store the entire array directly
-                
-                createOrOpenDatabase(jsonData);
+                const cleanedJsonData = cleanSpotifyData(jsonData);
+                createOrOpenDatabase(cleanedJsonData);
             } else {
                 statusDiv.textContent = "Missing required fields in the JSON data";
             }
         } catch (error) {
             console.error('Error parsing JSON:', error);
             statusDiv.textContent = `Error: ${error.message}`;
+            return
         }
     };
     
     reader.readAsText(file);
+    // window.location.href = '/account/dashboard';
 }
 
 // Function to create or open database with correct versioning
@@ -161,7 +163,37 @@ function openAndSave(dbName, storeName, key, data, version) {
     };
 }
 
+function cleanSpotifyData(jsonData) {
+    if (!Array.isArray(jsonData)) {
+        throw new Error('Data must be an array');
+    }
 
+    const cleanedData = jsonData.map(item => {
+        // Basic validation and cleaning
+        const ts = item.ts ? item.ts.trim() : null;
+        const ms_played = parseInt(item.ms_played);
+        const track_name = item.master_metadata_track_name ? 
+            item.master_metadata_track_name.trim() : null;
+        const artist_name = item.master_metadata_album_artist_name ? 
+            item.master_metadata_album_artist_name.trim() : null;
+
+        return {
+            ts,
+            ms_played,
+            master_metadata_track_name: track_name,
+            master_metadata_album_artist_name: artist_name
+        };
+    }).filter(item => 
+        // Remove invalid entries
+        item.ts && 
+        !isNaN(item.ms_played) && 
+        item.ms_played > 0 &&
+        item.master_metadata_track_name && 
+        item.master_metadata_album_artist_name
+    );
+
+    return cleanedData;
+}
 
 // change the label of the file input field
 const fileInput = document.getElementById('fileInput');
