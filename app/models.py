@@ -28,13 +28,27 @@ class User(UserMixin, db.Model):
         return "<User {}>".format(self.username)
 
 
+class SharedData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    data = db.Column(db.JSON, nullable=False)
+
+    def __repr__(self):
+        return f"<SharedData id={self.id}>"
+
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.String, default=lambda: datetime.utcnow().isoformat())
-    shared_data = db.Column(db.JSON, nullable=True)
+    shared_data_id = db.Column(
+        db.Integer,
+        db.ForeignKey("shared_data.id", name="fk_message_shared_data"),
+        nullable=True,
+    )
+    shared_data = db.relationship("SharedData", backref="messages", lazy=True)
 
     def __repr__(self):
         return "<Message from {} to {} at {}: {}>".format(
