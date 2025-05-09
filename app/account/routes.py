@@ -229,3 +229,11 @@ def dashboard():
         except Exception as e:
             print(f"Error in dashboard route: {e}")
             return jsonify({"error": str(e)}), 500
+
+
+@bp.route("/upload")
+@login_required
+def upload():
+    return render_template(
+        "/account/upload.html", title="Upload", login=current_user.is_authenticated
+    )

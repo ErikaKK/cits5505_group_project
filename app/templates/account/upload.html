@@ -1,0 +1,101 @@
+{% extends "/account/account.html" %} {% block addtional_content %}
+<div
+  class="flex flex-col justify-center items-center my-20 gap-10 px-4 text-center"
+>
+  <p class="text-4xl font-extrabold text-gray-800 max-w-2xl">
+    Upload Your Streaming History from Spotify
+  </p>
+
+  <div
+    class="p-8 border border-gray-300 rounded-xl shadow-sm bg-white w-full max-w-md"
+  >
+    <input
+      type="file"
+      name="json_file"
+      accept=".json"
+      class="hidden"
+      id="fileInput"
+    />
+    <label
+      for="fileInput"
+      class="cursor-pointer bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg w-full block transition duration-200"
+      id="fileLabel"
+    >
+      Upload (JSON format)
+    </label>
+    <button
+      type="submit"
+      class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition duration-200"
+      id="upload-btn"
+    >
+      See Insights
+    </button>
+  </div>
+
+  <div id="status" class="mt-4 text-sm text-gray-600"></div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 my-16">
+  <h1 class="text-4xl font-bold text-gray-900 mb-6">
+    How to Get Your Streaming History from Spotify?
+  </h1>
+
+  <div class="space-y-8 text-gray-700">
+    <div>
+      <h2 class="text-2xl font-semibold mb-2">
+        1. Request Your Data from Spotify
+      </h2>
+      <p>
+        To request your extended streaming history files, follow the steps on
+        the Spotify website:
+      </p>
+      <ol class="list-decimal list-inside mt-2 space-y-1">
+        <li>Open the Privacy page on the Spotify website.</li>
+        <li>Scroll down to the "Download your data" section.</li>
+        <li>
+          Configure the page to look like the screenshot below (Untick "Account
+          data" and tick "Extended streaming history").
+        </li>
+      </ol>
+      <img
+        src="../static/src/privacy-step3.webp"
+        alt="Privacy step screenshot"
+        class="w-full rounded-lg mt-4 shadow-sm"
+      />
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-semibold mb-2">2. Confirm Your Request</h2>
+      <p>
+        After submitting your request, Spotify will email you a confirmation
+        link. Confirm it to start the data collection process.
+      </p>
+      <img
+        src="../static/src/step2.webp"
+        alt="Confirmation step screenshot"
+        class="w-full rounded-lg mt-4 shadow-sm"
+      />
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-semibold mb-2">3. Wait for Your Data</h2>
+      <p>
+        This process may take some time. Spotify will send a .ZIP file to your
+        email once it's ready.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-semibold mb-2">
+        4. Download and Extract the Files
+      </h2>
+      <p>
+        When your data is ready, download the .ZIP file from the email and
+        extract it to get the .JSON file needed for upload here.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="../../static/js/upload.js" defer></script>
+{% endblock %}
