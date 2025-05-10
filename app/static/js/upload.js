@@ -16,7 +16,9 @@ document
   .addEventListener("click", handleFileUpload);
 
 // Handle file upload
-function handleFileUpload() {
+function handleFileUpload(e) {
+  e.preventDefault();
+
   const fileInput = document.getElementById("fileInput");
   const file = fileInput.files[0];
 
@@ -27,30 +29,53 @@ function handleFileUpload() {
     return;
   }
 
+  // Validate file type
+  if (file.type !== "application/json") {
+    statusDiv.textContent = "Please upload a JSON file.";
+  }
+
   const reader = new FileReader();
   reader.onload = function (e) {
     try {
       const jsonData = JSON.parse(e.target.result);
 
-      // Validate it's an array
+      // Validate it's contents
       if (!Array.isArray(jsonData)) {
-        throw new Error("JSON data must be an array");
+        throw new Error(
+          "Invalid JSON format: please read through the instructions."
+        );
       }
 
       const isValid = jsonData.every((entry) =>
         requiredFields.every((field) => field in entry)
       );
 
-      if (isValid) {
-        // Store the entire array directly
-
-        createOrOpenDatabase(jsonData);
-      } else {
-        statusDiv.textContent = "Missing required fields in the JSON data";
+      if (!isValid) {
+        throw new Error("Missing required fields in JSON data.");
       }
+
+      // upload via endpoint
+      const formData = new FormData();
+      formData.append("json_file", file);
+
+      fetch("/account/shared_data/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.success) {
+            statusDiv.textContent =
+              "Uploaded file now has been successfully saved!";
+          } else {
+            throw new Error(result.error);
+          }
+        })
+        .catch((error) => {
+          statusDiv.textContent = `Upload failed due to: ${error.message}`;
+        });
     } catch (error) {
-      console.error("Error parsing JSON:", error);
-      statusDiv.textContent = `Error: ${error.message}`;
+      statusDiv.textContent = `Invalid JSON format: please read through the instructions. Error: ${error.message}`;
     }
   };
 
