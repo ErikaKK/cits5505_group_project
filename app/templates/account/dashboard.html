@@ -5,16 +5,32 @@
   <h3 class="text-4xl font-extrabold text-gray-800 max-w-2xl">
     Spotify Data Visualisation
   </h3>
+  <div class="max-w-120 bg-gray-100 border-2 border-gray-300 rounded-lg p-4">
+    <div class="flex g-5 justify-center items-center mb-4">
+      <div class="flex flex-col">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" disabled required />
+      </div>
+      <div class="flex flex-col">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" disabled required />
+      </div>
+    </div>
+    <div class="date-info">Loading date range...</div>
+    <button
+      id="loadDashboard"
+      class="w-fit bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold transition duration-200"
+    >
+      Generate Dashboard
+    </button>
+  </div>
 
-  <button
-    id="loadDashboard"
-    class="w-fit bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold transition duration-200"
-  >
-    Visualise My Spotify Data
-  </button>
   <div id="status-message"></div>
+  <div id="loading" class="loading" style="display: none">
+    Processing data, please wait...
+  </div>
 </div>
-<div id="dashboardContainer"></div>
+<div id="dashboardContainer" class="flex justify-center"></div>
 
 <script src="../static/js/dashboard.js" defer></script>
 

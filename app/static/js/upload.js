@@ -11,6 +11,9 @@ const requiredFields = [
   "spotify_track_uri",
 ];
 
+// Get CSRF token from meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 document
   .getElementById("upload-btn")
   .addEventListener("click", handleFileUpload);
@@ -61,6 +64,10 @@ function handleFileUpload(e) {
       fetch("/account/shared_data/upload", {
         method: "POST",
         body: formData,
+        headers: {
+          'X-CSRFToken': csrfToken,  // Add CSRF token
+          'X-Requested-With': 'XMLHttpRequest'  // Add this for AJAX request
+      },
       })
         .then((response) => response.json())
         .then((result) => {
@@ -75,7 +82,7 @@ function handleFileUpload(e) {
           statusDiv.textContent = `Upload failed due to: ${error.message}`;
         });
     } catch (error) {
-      statusDiv.textContent = `Invalid JSON format: please read through the instructions. Error: ${error.message}`;
+      statusDiv.textContent = `Error: ${error.message}`;
     }
   };
 

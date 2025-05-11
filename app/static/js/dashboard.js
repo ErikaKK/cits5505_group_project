@@ -1,98 +1,129 @@
-const requiredFields = [
-    "ts",
-    "ms_played",
-    "master_metadata_track_name",
-    "master_metadata_album_artist_name",
-];
-const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
-const statusMessage = document.getElementById("status-message");
+const visualizeBtn = document.getElementById('loadDashboard');
+const statusMessage = document.getElementById('status-message');
+const loading = document.getElementById('loading');
+const startDateInput = document.getElementById('startDate');
+const endDateInput = document.getElementById('endDate');
+const dateInfo = document.querySelector('.date-info');
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-const visualiseBtn = document.getElementById("loadDashboard");
-visualiseBtn.addEventListener("click", sendDataToFlask);
+// Fetch date range when page loads
+fetchDateRange();
 
-async function sendDataToFlask() {
-    statusMessage.textContent = "Opening database...";
-    visualiseBtn.disabled = true;
-
+async function fetchDateRange() {
     try {
-        const request = indexedDB.open("MyDatabase", 2);
-        
-        request.onerror = function(event) {
-            handleError("Failed to open database: " + event.target.errorCode);
-        };
+        const response = await fetch('/account/visualise/date-range');
+        if (!response.ok) {
+            throw new Error('Failed to fetch date range');
+        }
 
-        request.onsuccess = async function(event) {
-            const db = event.target.result;
-            statusMessage.textContent = "Database opened, retrieving data...";
+        const data = await response.json();
 
-            try {
-                const tx = db.transaction("jsonStore", "readonly");
-                const store = tx.objectStore("jsonStore");
-                const getRequest = store.get("myBigData");
+        // Set min and max dates for inputs
+        startDateInput.min = data.min_date;
+        startDateInput.max = data.max_date;
+        endDateInput.min = data.min_date;
+        endDateInput.max = data.max_date;
 
-                getRequest.onerror = function(event) {
-                    handleError("Error retrieving data: " + event.target.errorCode);
-                };
+        // Set default values
+        startDateInput.value = data.min_date;
+        endDateInput.value = data.max_date;
 
-                getRequest.onsuccess = async function() {
-                    const data = getRequest.result;
-                    if (!data) {
-                        handleError("No Spotify data found in database");
-                        return;
-                    }
+        // Enable inputs
+        startDateInput.disabled = false;
+        endDateInput.disabled = false;
+        visualizeBtn.disabled = false;
 
-                    statusMessage.textContent = "Data retrieved, generating visualisation...";
+        // Update info text
+        dateInfo.textContent = `Data available from ${formatDate(data.min_date)} to ${formatDate(data.max_date)}`;
 
-                    try {
-                        const response = await fetch("/account/dashboard", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-Requested-With": "XMLHttpRequest",
-                                "X-CSRFToken": csrfToken,
-                            },
-                            body: JSON.stringify(data),
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(`Server responded with status: ${response.status}`);
-                        }
-
-                        // Get the image blob
-                        const imageBlob = await response.blob();
-                        
-                        // Create image URL and display it
-                        const imageUrl = URL.createObjectURL(imageBlob);
-                        const img = document.createElement('img');
-                        img.src = imageUrl;
-                        img.style.maxWidth = '100%';
-                        
-                        // Clear any existing content and add the new image
-                        const container = document.getElementById('dashboardContainer');
-                        container.innerHTML = '';
-                        container.appendChild(img);
-                        
-                        statusMessage.textContent = "Visualisation complete!";
-                    } catch (error) {
-                        handleError("Error generating visualisation: " + error.message);
-                    }
-                };
-            } catch (error) {
-                handleError("Transaction error: " + error.message);
-            }
-        };
     } catch (error) {
-        handleError(error.message);
-    } finally {
-        visualiseBtn.disabled = false;
+        dateInfo.textContent = 'Error loading date range';
+        console.error('Error:', error);
     }
 }
+
+// Add date validation
+startDateInput.addEventListener('change', validateDates);
+endDateInput.addEventListener('change', validateDates);
+
+function validateDates() {
+    const startDate = new Date(startDateInput.value);
+    const endDate = new Date(endDateInput.value);
+    
+    if (startDate > endDate) {
+        statusMessage.textContent = "Start date cannot be after end date";
+        visualizeBtn.disabled = true;
+        return false;
+    }
+
+    // Check if dates are within min and max range
+    if (startDate < new Date(startDateInput.min) || 
+        startDate > new Date(startDateInput.max) ||
+        endDate < new Date(endDateInput.min) || 
+        endDate > new Date(endDateInput.max)) {
+        statusMessage.textContent = "Selected dates must be within available data range";
+        visualizeBtn.disabled = true;
+        return false;
+    }
+    
+    visualizeBtn.disabled = false;
+    statusMessage.textContent = "";
+    return true;
+}
+
+function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString();
+}
+
+visualizeBtn.addEventListener('click', async function() {
+    if (!validateDates()) return;
+    
+    statusMessage.textContent = "Fetching data...";
+    visualizeBtn.disabled = true;
+    loading.style.display = 'block';
+
+    try {
+        const response = await fetch("/account/visualise/dashboard", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+                startDate: startDateInput.value,
+                endDate: endDateInput.value
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server error: ${errorText}`);
+        }
+
+        const imageBlob = await response.blob();
+        const imageUrl = URL.createObjectURL(imageBlob);
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.maxWidth = '100%';
+        
+        const container = document.getElementById('dashboardContainer');
+        container.innerHTML = '';
+        container.appendChild(img);
+        
+        statusMessage.textContent = "Visualization complete!";
+
+    } catch (error) {
+        handleError("Error generating visualization: " + error.message);
+    } finally {
+        visualizeBtn.disabled = false;
+        loading.style.display = 'none';
+    }
+});
 
 function handleError(message) {
     console.error(message);
     statusMessage.textContent = message;
-    statusMessage.className = "alert alert-danger";
-    visualiseBtn.disabled = false;
+    loading.style.display = 'none';
+    visualizeBtn.disabled = false;
 }
