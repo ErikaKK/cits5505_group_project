@@ -1,10 +1,11 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import json, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import db
 from app.account.forms import ProfileForm, PasswordForm
 from app.account import bp
-from app.models import User
+from app.models import SharedData, User
 
 
 @bp.route("/profile", methods=["GET", "POST"])
@@ -113,3 +114,27 @@ def upload():
     return render_template(
         "/account/upload.html", title="Upload", login=current_user.is_authenticated
     )
+
+
+@bp.route("/shared_data/upload", methods=["POST"])
+@login_required
+def upload_shared_data():
+    uploaded_file = request.files.get("json_file")
+    if not uploaded_file:
+        return jsonify({"success": False, "error": "No file uploaded."}), 400
+
+    try:
+        data = json.load(uploaded_file)
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Invalid JSON: {str(e)}"}), 400
+
+    try:
+        # Save to SharedData table
+        shared_data_obj = SharedData(user_id=current_user.id, data=data)
+        db.session.add(shared_data_obj)
+        db.session.commit()
+
+        return jsonify({"success": True, "shared_data_id": shared_data_obj.id}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
