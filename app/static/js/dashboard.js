@@ -1,4 +1,4 @@
-const visualizeBtn = document.getElementById('loadDashboard');
+const visualiseBtn = document.getElementById('loadDashboard');
 const statusMessage = document.getElementById('status-message');
 const loading = document.getElementById('loading');
 const startDateInput = document.getElementById('startDate');
@@ -13,7 +13,10 @@ async function fetchDateRange() {
     try {
         const response = await fetch('/account/visualise/date-range');
         if (!response.ok) {
-            throw new Error('Failed to fetch date range');
+            if(response.status === 404){
+                throw new Error('No data found.');
+            }
+            throw new Error('Failed to fetch date range.');
         }
 
         const data = await response.json();
@@ -31,13 +34,13 @@ async function fetchDateRange() {
         // Enable inputs
         startDateInput.disabled = false;
         endDateInput.disabled = false;
-        visualizeBtn.disabled = false;
+        visualiseBtn.disabled = false;
 
         // Update info text
         dateInfo.textContent = `Data available from ${formatDate(data.min_date)} to ${formatDate(data.max_date)}`;
 
     } catch (error) {
-        dateInfo.textContent = 'Error loading date range';
+        dateInfo.textContent = 'Error loading date range. '+error;
         console.error('Error:', error);
     }
 }
@@ -52,7 +55,7 @@ function validateDates() {
     
     if (startDate > endDate) {
         statusMessage.textContent = "Start date cannot be after end date";
-        visualizeBtn.disabled = true;
+        visualiseBtn.disabled = true;
         return false;
     }
 
@@ -62,11 +65,11 @@ function validateDates() {
         endDate < new Date(endDateInput.min) || 
         endDate > new Date(endDateInput.max)) {
         statusMessage.textContent = "Selected dates must be within available data range";
-        visualizeBtn.disabled = true;
+        visualiseBtn.disabled = true;
         return false;
     }
     
-    visualizeBtn.disabled = false;
+    visualiseBtn.disabled = false;
     statusMessage.textContent = "";
     return true;
 }
@@ -75,11 +78,11 @@ function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString();
 }
 
-visualizeBtn.addEventListener('click', async function() {
+visualiseBtn.addEventListener('click', async function() {
     if (!validateDates()) return;
     
     statusMessage.textContent = "Fetching data...";
-    visualizeBtn.disabled = true;
+    visualiseBtn.disabled = true;
     loading.style.display = 'block';
 
     try {
@@ -111,12 +114,12 @@ visualizeBtn.addEventListener('click', async function() {
         container.innerHTML = '';
         container.appendChild(img);
         
-        statusMessage.textContent = "Visualization complete!";
+        statusMessage.textContent = "Visualisation complete!";
 
     } catch (error) {
-        handleError("Error generating visualization: " + error.message);
+        handleError("Error generating Visualisation: " + error.message);
     } finally {
-        visualizeBtn.disabled = false;
+        visualiseBtn.disabled = false;
         loading.style.display = 'none';
     }
 });
@@ -125,5 +128,72 @@ function handleError(message) {
     console.error(message);
     statusMessage.textContent = message;
     loading.style.display = 'none';
-    visualizeBtn.disabled = false;
+    visualiseBtn.disabled = false;
 }
+
+const shareButton = document.getElementById('shareData');
+    const sharePopover = document.getElementById('sharePopover');
+    const shareForm = document.getElementById('shareForm');
+    const cancelButton = document.getElementById('cancelShare');
+
+
+    // Show popover when share button is clicked
+    shareButton.addEventListener('click', () => {
+        if (!startDateInput.value || !endDateInput.value) {
+            alert('Please select a date range first');
+            return;
+        }
+        sharePopover.classList.remove('hidden');
+    });
+
+    // Hide popover when cancel is clicked
+    cancelButton.addEventListener('click', () => {
+        sharePopover.classList.add('hidden');
+        shareForm.reset();
+    });
+
+    // Hide popover when clicking outside
+    sharePopover.addEventListener('click', (e) => {
+        if (e.target === sharePopover) {
+            sharePopover.classList.add('hidden');
+            shareForm.reset();
+        }
+    });
+
+    // Handle form submission
+    shareForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const receiverEmail = document.getElementById('receiverEmail').value;
+        const message = document.getElementById('message').value;
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
+
+        try {
+            const response = await fetch('/account/share-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    receiverEmail,
+                    message,
+                    startDate,
+                    endDate
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Data shared successfully!');
+                sharePopover.classList.add('hidden');
+                shareForm.reset();
+            } else {
+                throw new Error(result.error || 'Failed to share data');
+            }
+        } catch (error) {
+            alert('Error sharing data: ' + error.message);
+        }
+    });

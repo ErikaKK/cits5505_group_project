@@ -5,24 +5,46 @@
   <h3 class="text-4xl font-extrabold text-gray-800 max-w-2xl">
     Spotify Data Visualisation
   </h3>
-  <div class="max-w-120 bg-gray-100 border-2 border-gray-300 rounded-lg p-4">
-    <div class="flex g-5 justify-center items-center mb-4">
-      <div class="flex flex-col">
+  <div class="max-w-120 bg-gray-100 border-2 border-gray-300 rounded-lg p-6">
+    <div class="flex g-5 gap-5 justify-center items-center mb-4 flex-wrap">
+      <div class="flex flex-col items-start">
         <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" disabled required />
+        <input
+          type="date"
+          id="startDate"
+          class="cursor-pointer outline-none border-2 border-gray-500 focus:border-green-500"
+          disabled
+          required
+        />
       </div>
-      <div class="flex flex-col">
+      <div class="flex flex-col items-start">
         <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" disabled required />
+        <input
+          type="date"
+          id="endDate"
+          class="cursor-pointer outline-none border-2 border-gray-500 focus:border-green-500"
+          disabled
+          required
+        />
       </div>
     </div>
-    <div class="date-info">Loading date range...</div>
-    <button
-      id="loadDashboard"
-      class="w-fit bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold transition duration-200"
-    >
-      Generate Dashboard
-    </button>
+    <div class="flex flex-col items-center gap-4">
+      <div class="date-info">Loading date range...</div>
+      <button
+        id="loadDashboard"
+        type="button"
+        class="w-50 cursor-pointer hover:bg-blue-500 bg-blue-600 text-white py-2 rounded-lg font-semibold transition duration-200"
+      >
+        Generate Dashboard
+      </button>
+      <button
+        id="shareData"
+        type="button"
+        class="w-50 cursor-pointer hover:bg-blue-500 bg-blue-600 text-white py-2 rounded-lg font-semibold transition duration-200"
+      >
+        Share Data
+      </button>
+    </div>
   </div>
 
   <div id="status-message"></div>
@@ -31,6 +53,57 @@
   </div>
 </div>
 <div id="dashboardContainer" class="flex justify-center"></div>
+<div
+  id="sharePopover"
+  class="hidden fixed inset-0 bg-gray-300 bg-opacity-50 flex items-center justify-center z-999"
+>
+  <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+    <h3 class="text-lg font-bold mb-4">Share Your Spotify Data</h3>
+    <form id="shareForm" class="space-y-4">
+      <div>
+        <label
+          for="receiverEmail"
+          class="block text-sm font-medium text-gray-700"
+          >Receiver's Email</label
+        >
+        <input
+          type="email"
+          id="receiverEmail"
+          name="receiverEmail"
+          required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="message" class="block text-sm font-medium text-gray-700"
+          >Message</label
+        >
+        <textarea
+          id="message"
+          name="message"
+          rows="3"
+          required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        ></textarea>
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button
+          type="button"
+          id="cancelShare"
+          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
+        >
+          Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="../static/js/dashboard.js" defer></script>
 

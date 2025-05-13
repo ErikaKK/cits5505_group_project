@@ -1,7 +1,7 @@
 import json
 from flask import jsonify, render_template, request
 from flask_login import login_required, current_user
-from app.models import Message, SharedData, User
+from app.models import Message, SpotifyData, User
 from app.messages import bp
 from app import db
 
@@ -46,7 +46,7 @@ def show_messages():
                 ),
                 "message": msg.message,
                 "created_at": msg.created_at,
-                "shared_data": (msg.shared_data.data if msg.shared_data else None),
+                "shared_data": msg.shared_data,
             }
             for msg in messages
         ],
@@ -63,17 +63,12 @@ def send_message():
     if not receiver_id:
         return jsonify({"success": False, "error": "Missing receiver_id"}), 400
 
-    shared_data_obj = None
+    shared_data = None
 
     # Handle shared data if file is uploaded
     if shared_file:
         try:
-            shared_data_json = json.load(shared_file)
-
-            # Create the SharedData object and add to session
-            shared_data_obj = SharedData(user_id=current_user.id, data=shared_data_json)
-            db.session.add(shared_data_obj)
-            db.session.flush()  # Ensure it gets an ID before commit
+            shared_data = json.load(shared_file)
 
         except Exception as e:
             return (
@@ -91,7 +86,7 @@ def send_message():
             sender_id=current_user.id,
             receiver_id=receiver_user.id,
             message=message,
-            shared_data_id=shared_data_obj.id if shared_data_obj else None,
+            shared_data=shared_data,
         )
         db.session.add(msg)
         db.session.commit()
@@ -108,9 +103,7 @@ def send_message():
                         "receiver": receiver_user.username,
                         "message": msg.message,
                         "created_at": msg.created_at,
-                        "shared_data": (
-                            msg.shared_data.data if msg.shared_data else None
-                        ),
+                        "shared_data": shared_data,
                     },
                 }
             ),

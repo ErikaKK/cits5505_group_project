@@ -14,12 +14,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.account.forms import ProfileForm, PasswordForm
 from app.account import bp
-from app.models import SharedData, User
+from app.models import SpotifyData, User
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 from app.account.visualisation import Visualisation
+from app.messages.utils import send_message_internal
 
 
 @bp.route("/profile", methods=["GET", "POST"])
@@ -130,28 +131,224 @@ def upload():
     )
 
 
-@bp.route("/shared_data/upload", methods=["POST"])
+@bp.route("/upload-file", methods=["POST"])
 @login_required
-def upload_shared_data():
-    uploaded_file = request.files.get("json_file")
-    if not uploaded_file:
-        return jsonify({"success": False, "error": "No file uploaded."}), 400
-
+def upload_file():
     try:
-        data = json.load(uploaded_file)
-    except Exception as e:
-        return jsonify({"success": False, "error": f"Invalid JSON: {str(e)}"}), 400
+        file = request.files.get("json_file")
+        if not file:
+            return jsonify({"error": "No file provided"}), 400
 
-    try:
-        # Save to SharedData table
-        shared_data_obj = SharedData(user_id=current_user.id, data=data)
-        db.session.add(shared_data_obj)
-        db.session.commit()
+        try:
+            new_data = json.load(file)
+            if not isinstance(new_data, list):
+                return jsonify({"error": "Invalid JSON format: must be an array"}), 400
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON file"}), 400
 
-        return jsonify({"success": True, "shared_data_id": shared_data_obj.id}), 200
+        # Get existing data for the user
+        existing_record = SpotifyData.query.filter_by(user_id=current_user.id).first()
+
+        if existing_record:
+            # Convert both datasets to pandas DataFrames
+            existing_df = pd.DataFrame(existing_record.data)
+            new_df = pd.DataFrame(new_data)
+
+            # Convert timestamps to datetime
+            existing_df["timestamp"] = pd.to_datetime(existing_df["ts"])
+            new_df["timestamp"] = pd.to_datetime(new_df["ts"])
+
+            # Extract dates for comparison
+            existing_df["date"] = existing_df["timestamp"].dt.date
+            new_df["date"] = new_df["timestamp"].dt.date
+
+            # Find overlapping dates
+            overlapping_dates = set(existing_df["date"]).intersection(
+                set(new_df["date"])
+            )
+
+            if overlapping_dates:
+                # Check for real conflicts in overlapping dates
+                real_conflicts = False
+
+                for date in overlapping_dates:
+                    # Get data for this date from both datasets
+                    existing_day = existing_df[existing_df["date"] == date]
+                    new_day = new_df[new_df["date"] == date]
+
+                    # Get unique timestamps for this day
+                    existing_times = set(existing_day["timestamp"])
+                    new_times = set(new_day["timestamp"])
+
+                    # Check for overlapping timestamps
+                    common_times = existing_times.intersection(new_times)
+
+                    if common_times:
+                        # Compare data for common timestamps
+                        for time in common_times:
+                            existing_entry = existing_day[
+                                existing_day["timestamp"] == time
+                            ].iloc[0]
+                            new_entry = new_day[new_day["timestamp"] == time].iloc[0]
+
+                            # Compare relevant fields
+                            if (
+                                existing_entry["ms_played"] != new_entry["ms_played"]
+                                or existing_entry["master_metadata_track_name"]
+                                != new_entry["master_metadata_track_name"]
+                                or existing_entry["master_metadata_album_artist_name"]
+                                != new_entry["master_metadata_album_artist_name"]
+                            ):
+                                real_conflicts = True
+                                break
+
+                    if real_conflicts:
+                        break
+
+                if real_conflicts:
+                    # Real conflicts found
+                    return (
+                        jsonify(
+                            {
+                                "status": "conflict",
+                                "message": "Conflicting data found for same timestamps",
+                                "details": {
+                                    "overlapping_dates": len(overlapping_dates)
+                                },
+                            }
+                        ),
+                        409,
+                    )
+                else:
+                    # No real conflicts, merge all non-duplicate entries
+                    existing_times = set(existing_df["ts"])
+                    new_entries = [
+                        entry for entry in new_data if entry["ts"] not in existing_times
+                    ]
+
+                    # Merge and sort
+                    merged_data = existing_record.data + new_entries
+                    merged_data.sort(key=lambda x: x["ts"])
+
+                    existing_record.data = merged_data
+                    db.session.commit()
+
+                    return jsonify(
+                        {
+                            "success": True,
+                            "message": "Data merged successfully",
+                            "details": {
+                                "new_entries_added": len(new_entries),
+                                "overlapping_dates": len(overlapping_dates),
+                            },
+                        }
+                    )
+            else:
+                # No overlapping dates, safe to merge all
+                merged_data = existing_record.data + new_data
+                merged_data.sort(key=lambda x: x["ts"])
+
+                existing_record.data = merged_data
+                db.session.commit()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "message": "Data merged successfully",
+                        "details": {"new_entries_added": len(new_data)},
+                    }
+                )
+        else:
+            # First time upload
+            new_data.sort(key=lambda x: x["ts"])
+            new_record = SpotifyData(user_id=current_user.id, data=new_data)
+            db.session.add(new_record)
+            db.session.commit()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "Data uploaded successfully",
+                    "details": {"entries_added": len(new_data)},
+                }
+            )
+
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        print(f"Upload error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+@bp.route("/replace-data", methods=["POST"])
+@login_required
+def replace_data():
+    try:
+        new_data = request.get_json().get("new_data")
+        if not new_data:
+            return jsonify({"error": "No data provided"}), 400
+
+        existing_record = SpotifyData.query.filter_by(user_id=current_user.id).first()
+        if existing_record:
+            existing_record.data = new_data
+            db.session.commit()
+            return jsonify({"success": True, "message": "Data replaced successfully"})
+        else:
+            return jsonify({"error": "No existing record found"}), 404
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@bp.route("/share-data", methods=["POST"])
+@login_required
+def share_data():
+    try:
+        data = request.get_json()
+        receiver_email = data.get("receiverEmail")
+        message = data.get("message")
+        start_date = datetime.strptime(data.get("startDate"), "%Y-%m-%d")
+        end_date = datetime.strptime(data.get("endDate"), "%Y-%m-%d")
+
+        # Get user's data
+        user_data = SpotifyData.query.filter_by(user_id=current_user.id).first()
+        if not user_data:
+            return jsonify({"error": "No data found"}), 404
+
+        # Convert to DataFrame and filter by date range
+        df = pd.DataFrame(user_data.data)
+        df["timestamp"] = pd.to_datetime(df["ts"])
+        filtered_df = df[
+            (df["timestamp"].dt.date >= start_date.date())
+            & (df["timestamp"].dt.date <= end_date.date())
+        ]
+
+        # Convert DataFrame to dict and ensure timestamps are strings
+        filtered_data = []
+        for record in filtered_df.to_dict("records"):
+            # Convert any Timestamp objects to strings
+            cleaned_record = {}
+            for key, value in record.items():
+                if isinstance(value, pd.Timestamp):
+                    cleaned_record[key] = value.isoformat()
+                else:
+                    cleaned_record[key] = value
+            filtered_data.append(cleaned_record)
+
+        # Use your existing function to send the message
+        try:
+            send_message_internal(
+                sender_id=current_user.id,
+                receiver_email=receiver_email,
+                message=message,
+                shared_data=filtered_data,
+            )
+            return jsonify({"success": True, "message": "Data shared successfully"})
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @bp.route("/dashboard")
@@ -169,7 +366,7 @@ def dashboard():
 def get_date_range():
     try:
         # Get user's data from database
-        user_data = SharedData.query.filter_by(user_id=current_user.id).first()
+        user_data = SpotifyData.query.filter_by(user_id=current_user.id).first()
         if not user_data:
             return jsonify({"error": "No data found"}), 404
 
@@ -219,7 +416,7 @@ def visualise_dashboard():
             return jsonify({"error": "Start date cannot be after end date"}), 400
 
         # Get user's data from database
-        user_data = SharedData.query.filter_by(user_id=current_user.id).first()
+        user_data = SpotifyData.query.filter_by(user_id=current_user.id).first()
         if not user_data:
             return jsonify({"error": "No data found"}), 404
 
@@ -238,7 +435,7 @@ def visualise_dashboard():
         if df.empty:
             return jsonify({"error": "No data found for selected date range"}), 404
 
-        # Create visualization
+        # Create Visualisation
         viz = Visualisation()
 
         # Process the filtered data
@@ -247,7 +444,7 @@ def visualise_dashboard():
         # Create a BytesIO object to store the image
         img_bytesio = BytesIO()
 
-        # Create the visualization
+        # Create the Visualisation
         figure, axis = plt.subplots(2, 2, figsize=(14, 10), facecolor="white")
         axis = axis.flatten()
 

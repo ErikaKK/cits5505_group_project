@@ -6,6 +6,24 @@ import matplotlib.pyplot as pyplot
 
 
 class Visualisation:
+    """
+    A class to handle Spotify data visualisation.
+
+    This class processes Spotify streaming history data and creates
+    various visualisations including top artists, top tracks,
+    monthly listening time, and daily listening patterns.
+
+    Attributes:
+        table (pd.DataFrame): Processed Spotify streaming data
+
+    Methods:
+        process_data(df): Process raw DataFrame into required format
+        top_artists_chart(axis): Create top 5 artists visualisation
+        top_tracks_chart(axis): Create top 5 tracks visualisation
+        monthly_time_spent(axis): Create monthly listening time visualisation
+        avg_daily_minutes_chart(axis): Create daily listening pattern visualisation
+    """
+
     def process_data(self, df):
         """Process DataFrame directly instead of reading from file"""
         try:
