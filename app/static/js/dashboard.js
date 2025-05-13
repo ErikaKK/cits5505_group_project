@@ -78,6 +78,27 @@ function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString();
 }
 
+
+let currentUserId;
+
+// Fetch user ID when page loads
+async function initializeUserInfo() {
+    try {
+        const response = await fetch('/account/user-info');
+        if (!response.ok) {
+            throw new Error('Failed to fetch user info');
+        }
+        const data = await response.json();
+        currentUserId = data.user_id;
+        // Now you can use currentUserId throughout your code
+    } catch (error) {
+        console.error('Error getting user ID:', error);
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initializeUserInfo);
+
 visualiseBtn.addEventListener('click', async function() {
     if (!validateDates()) return;
     
@@ -95,7 +116,8 @@ visualiseBtn.addEventListener('click', async function() {
             },
             body: JSON.stringify({
                 startDate: startDateInput.value,
-                endDate: endDateInput.value
+                endDate: endDateInput.value,
+                userId: currentUserId
             })
         });
 

@@ -123,6 +123,18 @@ def change_password():
     )
 
 
+@bp.route("/user-info", methods=["GET"])
+@login_required
+def get_user_info():
+    return jsonify(
+        {
+            "user_id": current_user.id,
+            "username": current_user.username,
+            "email": current_user.email,
+        }
+    )
+
+
 @bp.route("/upload")
 @login_required
 def upload():
@@ -157,6 +169,8 @@ def upload_file():
             # Convert timestamps to datetime
             existing_df["timestamp"] = pd.to_datetime(existing_df["ts"])
             new_df["timestamp"] = pd.to_datetime(new_df["ts"])
+            existing_timestamps = set(existing_df["ts"])
+            new_timestamps = set(new_df["ts"])
 
             # Extract dates for comparison
             existing_df["date"] = existing_df["timestamp"].dt.date
@@ -170,40 +184,38 @@ def upload_file():
             if overlapping_dates:
                 # Check for real conflicts in overlapping dates
                 real_conflicts = False
+                overlapping_timestamps = existing_timestamps.intersection(
+                    new_timestamps
+                )
 
-                for date in overlapping_dates:
-                    # Get data for this date from both datasets
-                    existing_day = existing_df[existing_df["date"] == date]
-                    new_day = new_df[new_df["date"] == date]
+                if overlapping_timestamps:
+                    # Check if the overlapping entries are identical
 
-                    # Get unique timestamps for this day
-                    existing_times = set(existing_day["timestamp"])
-                    new_times = set(new_day["timestamp"])
+                    for ts in overlapping_timestamps:
+                        existing_entry = existing_df[existing_df["ts"] == ts].iloc[0]
+                        new_entry = new_df[new_df["ts"] == ts].iloc[0]
 
-                    # Check for overlapping timestamps
-                    common_times = existing_times.intersection(new_times)
+                        # Compare all fields except 'ts'
+                        if not all(
+                            existing_entry[col] == new_entry[col]
+                            for col in existing_entry.index
+                            if col != "ts"
+                        ):
+                            real_conflicts = True
 
-                    if common_times:
-                        # Compare data for common timestamps
-                        for time in common_times:
-                            existing_entry = existing_day[
-                                existing_day["timestamp"] == time
-                            ].iloc[0]
-                            new_entry = new_day[new_day["timestamp"] == time].iloc[0]
+                # Function to check for nearby timestamps
+                def find_nearby_records(timestamp, df, window_minutes=1):
+                    time_delta = pd.Timedelta(minutes=window_minutes)
+                    mask = (df["timestamp"] >= timestamp - time_delta) & (
+                        df["timestamp"] <= timestamp + time_delta
+                    )
+                    return df[mask]
 
-                            # Compare relevant fields
-                            if (
-                                existing_entry["ms_played"] != new_entry["ms_played"]
-                                or existing_entry["master_metadata_track_name"]
-                                != new_entry["master_metadata_track_name"]
-                                or existing_entry["master_metadata_album_artist_name"]
-                                != new_entry["master_metadata_album_artist_name"]
-                            ):
-                                real_conflicts = True
-                                break
-
-                    if real_conflicts:
-                        break
+                # Check for conflicts
+                for _, new_row in new_df.iterrows():
+                    nearby = find_nearby_records(new_row["timestamp"], existing_df)
+                    if not nearby.empty:
+                        real_conflicts = True
 
                 if real_conflicts:
                     # Real conflicts found
@@ -211,7 +223,7 @@ def upload_file():
                         jsonify(
                             {
                                 "status": "conflict",
-                                "message": "Conflicting data found for same timestamps",
+                                "message": "Conflicting data found.",
                                 "details": {
                                     "overlapping_dates": len(overlapping_dates)
                                 },
@@ -239,7 +251,6 @@ def upload_file():
                             "message": "Data merged successfully",
                             "details": {
                                 "new_entries_added": len(new_entries),
-                                "overlapping_dates": len(overlapping_dates),
                             },
                         }
                     )
@@ -416,7 +427,7 @@ def visualise_dashboard():
             return jsonify({"error": "Start date cannot be after end date"}), 400
 
         # Get user's data from database
-        user_data = SpotifyData.query.filter_by(user_id=current_user.id).first()
+        user_data = SpotifyData.query.filter_by(user_id=data["userId"]).first()
         if not user_data:
             return jsonify({"error": "No data found"}), 404
 

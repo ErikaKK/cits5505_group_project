@@ -34,19 +34,13 @@ def show_messages():
                 "id": msg.id,
                 "sender_id": msg.sender_id,
                 "receiver_id": msg.receiver_id,
-                "sender": (
-                    None
-                    if msg.sender_id == current_user.id
-                    else user_map.get(msg.sender_id, "Unknown")
-                ),
-                "receiver": (
-                    None
-                    if msg.receiver_id == current_user.id
-                    else user_map.get(msg.receiver_id, "Unknown")
-                ),
+                "sender": user_map.get(msg.sender_id, "Unknown"),
+                "receiver": user_map.get(msg.receiver_id, "Unknown"),
                 "message": msg.message,
                 "created_at": msg.created_at,
                 "shared_data": msg.shared_data,
+                "is_self": msg.sender_id
+                == msg.receiver_id,  # Add flag for self-messages
             }
             for msg in messages
         ],
@@ -99,7 +93,7 @@ def send_message():
                         "id": msg.id,
                         "sender_id": msg.sender_id,
                         "receiver_id": msg.receiver_id,
-                        "sender": None,
+                        "sender": current_user.username,
                         "receiver": receiver_user.username,
                         "message": msg.message,
                         "created_at": msg.created_at,

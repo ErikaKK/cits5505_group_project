@@ -47,14 +47,15 @@
     <ul id="message-list" class="divide-y divide-gray-700 mt-2">
       {% for msg in messages %}
       <li
-        class="m-2 p-4 cursor-pointer hover:scale-[1.02] transition transform duration-200 rounded-xl {{ 'bg-blue-800 hover:bg-blue-700' if not msg.sender else 'bg-orange-800 hover:bg-orange-700' }}"
+        class="m-2 p-4 cursor-pointer hover:scale-[1.02] transition transform duration-200 rounded-xl {{ 'bg-blue-800 hover:bg-blue-700' if msg.sender_id == current_user.id else 'bg-orange-800 hover:bg-orange-700' }}"
         onclick="showMessage({{ msg.id }})"
         data-sender-id="{{ msg.sender_id }}"
         data-receiver-id="{{ msg.receiver_id }}"
       >
         <div class="font-semibold text-white">
-          {% if not msg.sender %} ➡️ To {{ msg.receiver }} {% else %} 📨 From {{
-          msg.sender }} {% endif %}
+          {% if msg.sender_id == current_user.id %} {% if msg.sender_id ==
+          msg.receiver_id %} 📝 Note to Self {% else %} ➡️ To {{ msg.receiver }}
+          {% endif %} {% else %} 📨 From {{ msg.sender }} {% endif %}
         </div>
         <div class="text-sm text-gray-300 truncate mt-1">
           {{ msg.message | truncate(50, True, '...') }}
@@ -130,259 +131,260 @@
 </div>
 
 <script>
-     const sharedMessages = {{ messages|tojson }};
-     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-     function showMessage(id) {
-       const msg = sharedMessages.find(m => m.id === id);
-       const detail = document.getElementById('message-detail');
-       const receiverIdInput = document.getElementById('receiver-id');
-       const currentUserId = {{ current_user.id }};
-       receiverIdInput.value = (msg.sender_id === currentUserId) ? msg.receiver_id : msg.sender_id;
+  const sharedMessages = {{ messages|tojson }};
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  function showMessage(id) {
+    const msg = sharedMessages.find(m => m.id === id);
+    const detail = document.getElementById('message-detail');
+    const receiverIdInput = document.getElementById('receiver-id');
+    const currentUserId = {{ current_user.id }};
+    receiverIdInput.value = (msg.sender_id === currentUserId) ? msg.receiver_id : msg.sender_id;
 
-       let isoString = msg.created_at + 'Z';
-       const createdAt = new Date(isoString);
-       const formattedTime = createdAt.toLocaleString(undefined, {
-         year: 'numeric',
-         month: 'short',
-         day: 'numeric',
-         hour: '2-digit',
-         minute: '2-digit',
-         second:"2-digit",
-         hour12: true,
-       });
+    let isoString = msg.created_at + 'Z';
+    const createdAt = new Date(isoString);
+    const formattedTime = createdAt.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second:"2-digit",
+      hour12: true,
+    });
 
-       let html = `
-         <div class="flex flex-col gap-4 animate-fadeIn">
-           <div class="flex items-center gap-4">
-             <div class="flex-1">
-               <p class="text-sm text-gray-500">Sender</p>
-               <p class="text-lg font-semibold text-gray-800">${!msg.sender ? "Me" : msg.sender}</p>
-             </div>
-             <div class="flex-1">
-               <p class="text-sm text-gray-500">Receiver</p>
-               <p class="text-lg font-semibold text-gray-800">${!msg.sender ? msg.receiver : "Me"}</p>
-             </div>
-           </div>
+    let html = `
+      <div class="flex flex-col gap-4 animate-fadeIn">
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <p class="text-sm text-gray-500">Sender</p>
+            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : (!msg.sender ? "Me" : msg.sender)}</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-500">Receiver</p>
+            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : (!msg.sender ? msg.receiver : "Me")}</p>
+          </div>
+        </div>
 
-           <div class="border-t pt-4">
-             <p class="text-sm text-gray-500 mb-1">Sent At</p>
-             <p class="text-md text-gray-700">${formattedTime}</p>
-           </div>
+        <div class="border-t pt-4">
+          <p class="text-sm text-gray-500 mb-1">Sent At</p>
+          <p class="text-md text-gray-700">${formattedTime}</p>
+        </div>
 
-           <div class="border-t pt-4">
-             <p class="text-sm text-gray-500 mb-1">Message</p>
-             <p class="text-md text-gray-800">${msg.message}</p>
-           </div>
-         </div>
-       `;
+        <div class="border-t pt-4">
+          <p class="text-sm text-gray-500 mb-1">Message</p>
+          <p class="text-md text-gray-800">${msg.message}</p>
+        </div>
+      </div>
+    `;
 
-       if (msg.shared_data) {
-         const fields = {
-           conn_country: 'Country',
-           ts: 'TimeStamp',
+    if (msg.shared_data) {
+      const fields = {
+        conn_country: 'Country',
+        ts: 'TimeStamp',
 
-           master_metadata_track_name: 'Track',
-           master_metadata_album_artist_name: 'Artist',
-           master_metadata_album_album_name: 'Album'
-         };
+        master_metadata_track_name: 'Track',
+        master_metadata_album_artist_name: 'Artist',
+        master_metadata_album_album_name: 'Album'
+      };
 
-         const headers = Object.values(fields);
-         const keys = Object.keys(fields);
+      const headers = Object.values(fields);
+      const keys = Object.keys(fields);
 
-         let tableHeader = headers.map(h => `<th class="border px-2 py-1">${h}</th>`).join('');
-         let tableRows = msg.shared_data.map((row,idx) =>
-           (idx < 5) ? (`<tr>${keys.map(key => `<td class="border px-2 py-1">${row[key] !== null ? row[key] : ''}</td>`).join('')}</tr>`):""
-         ).join('');
-         // Get the date range from the first and last entries
-         const dates = msg.shared_data.map(item => new Date(item.ts));
-         const startDate = new Date(Math.min(...dates)).toISOString().split('T')[0];
-         const endDate = new Date(Math.max(...dates)).toISOString().split('T')[0];
-         html += `
-           <div class="flex flex-col gap-6 animate-fadeIn">
-             <div class="border-t pt-4 mt-4">
-               <p class="text-sm text-gray-500 mb-2 ">Attached Data Preview (5 rows)</p>
-               <div class="overflow-x-auto shadow">
-                 <table class="min-w-full table-auto border-collapse border  w-full text-sm text-left bg-white">
-                   <thead class="bg-gray-100">
-                     <tr>${tableHeader}</tr>
-                   </thead>
-                   <tbody>${tableRows}</tbody>
-                 </table>
-               </div>
-               <button
-                 id="loadDashboard"
-                 type="button"
-                 class="mt-4 w-50 cursor-pointer hover:bg-blue-500 bg-blue-600 text-white py-2 rounded-lg font-semibold transition duration-200"
-               > Generate Dashboard
-         </button>
-                 <div id="status-message"></div>
-         <div id="loading" class="loading" style="display: none">
-           Processing data, please wait...
-         </div>
+      let tableHeader = headers.map(h => `<th class="border px-2 py-1">${h}</th>`).join('');
+      let tableRows = msg.shared_data.map((row,idx) =>
+        (idx < 5) ? (`<tr>${keys.map(key => `<td class="border px-2 py-1">${row[key] !== null ? row[key] : ''}</td>`).join('')}</tr>`):""
+      ).join('');
+      // Get the date range from the first and last entries
+      const dates = msg.shared_data.map(item => new Date(item.ts));
+      const startDate = new Date(Math.min(...dates)).toISOString().split('T')[0];
+      const endDate = new Date(Math.max(...dates)).toISOString().split('T')[0];
+      html += `
+        <div class="flex flex-col gap-6 animate-fadeIn">
+          <div class="border-t pt-4 mt-4">
+            <p class="text-sm text-gray-500 mb-2 ">Attached Data Preview (5 rows)</p>
+            <div class="overflow-x-auto shadow">
+              <table class="min-w-full table-auto border-collapse border  w-full text-sm text-left bg-white">
+                <thead class="bg-gray-100">
+                  <tr>${tableHeader}</tr>
+                </thead>
+                <tbody>${tableRows}</tbody>
+              </table>
+            </div>
+            <button
+              id="loadDashboard"
+              type="button"
+              class="mt-4 w-50 cursor-pointer hover:bg-blue-500 bg-blue-600 text-white py-2 rounded-lg font-semibold transition duration-200"
+            > Generate Dashboard
+      </button>
+              <div id="status-message"></div>
+      <div id="loading" class="loading" style="display: none">
+        Processing data, please wait...
+      </div>
 
-             </div>
-           </div>
-           <div id="dashboardContainer" class="flex justify-center"></div>
+          </div>
+        </div>
+        <div id="dashboardContainer" class="flex justify-center"></div>
 
-         `;
-  // Animate fade-in
-       detail.style.opacity = 0;
-       setTimeout(() => {
-         detail.innerHTML = html;
-         detail.style.opacity = 1;
-         // Add event listener after the button is created in the DOM
-         const visualiseBtn = document.getElementById('loadDashboard');
-         const statusMessage = document.getElementById('status-message');
-         const loading = document.getElementById('loading');
-         if(visualiseBtn) {
-         visualiseBtn.addEventListener('click', async function() {
+      `;
+      detail.innerHTML = html;
 
+      setTimeout(() => {
 
-           statusMessage.textContent = "Fetching data...";
-           visualiseBtn.disabled = true;
-           loading.style.display = 'block';
+      // Add event listener after the button is created in the DOM
+      const visualiseBtn = document.getElementById('loadDashboard');
+      const statusMessage = document.getElementById('status-message');
+      const loading = document.getElementById('loading');
+      if(visualiseBtn) {
+        visualiseBtn.addEventListener('click', async function() {
 
-           try {
-               const response = await fetch("/account/visualise/dashboard", {
-                   method: "POST",
-                   headers: {
-                       "Content-Type": "application/json",
-                       "X-Requested-With": "XMLHttpRequest",
-                       "X-CSRFToken": csrfToken,
-                   },
-                   body: JSON.stringify({
-                       startDate: startDate,
-                       endDate: endDate
-                   })
-               });
+        statusMessage.textContent = "Fetching data...";
+        visualiseBtn.disabled = true;
+        loading.style.display = 'block';
 
-               if (!response.ok) {
-                   const errorText = await response.text();
-                   throw new Error(`Server error: ${errorText}`);
-               }
+        try {
+            const response = await fetch("/account/visualise/dashboard", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate,
+                userId: msg.sender_id
+                })
+            });
 
-               const imageBlob = await response.blob();
-               const imageUrl = URL.createObjectURL(imageBlob);
-               const img = document.createElement('img');
-               img.src = imageUrl;
-               img.style.maxWidth = '100%';
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server error: ${errorText}`);
+            }
 
-               const container = document.getElementById('dashboardContainer');
-               container.innerHTML = '';
-               container.appendChild(img);
+            const imageBlob = await response.blob();
+            const imageUrl = URL.createObjectURL(imageBlob);
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.maxWidth = '100%';
 
-               statusMessage.textContent = "Visualisation complete!";
+            const container = document.getElementById('dashboardContainer');
+            container.innerHTML = '';
+            container.appendChild(img);
 
-             } catch (error) {
-                 handleError("Error generating Visualisation: " + error.message);
-             } finally {
-                 visualiseBtn.disabled = false;
-                 loading.style.display = 'none';
-             }
-           });
-         }
+            statusMessage.textContent = "Visualisation complete!";
 
-           function handleError(message) {
-             console.error(message);
-             statusMessage.textContent = message;
-             loading.style.display = 'none';
-             visualiseBtn.disabled = false;
-           }
+          } catch (error) {
+              handleError("Error generating Visualisation: " + error.message);
+          } finally {
+              visualiseBtn.disabled = false;
+              loading.style.display = 'none';
+          }
+        });
+      }
 
-
-       }, 100);
-       }
+        function handleError(message) {
+          console.error(message);
+          statusMessage.textContent = message;
+          loading.style.display = 'none';
+          visualiseBtn.disabled = false;
+        }
 
 
-     }
-
-     document.getElementById('reply-form').addEventListener('submit', async function(e) {
-       e.preventDefault();
-
-       const receiverId = document.getElementById('receiver-id').value;
-       const messageText = this.message.value.trim();
-       const sharedFile = document.getElementById('shared-file').files[0];
-
-       if (!receiverId) {
-         alert('Please select a conversation or start a new one.');
-         return;
-       }
-
-       if (!messageText && !sharedFile) {
-         alert('You must enter a message or upload a file.');
-         return;
-       }
-
-       const formData = new FormData();
-       formData.append('receiver_id', receiverId);
-       formData.append('message', messageText);
-       if (sharedFile) {
-         formData.append('shared_file', sharedFile);
-       }
-
-       const response = await fetch('/messages/send', {
-         method: 'POST',
-         body: formData,
-         headers: {"X-CSRFToken": csrfToken,}
-       });
-
-       const result = await response.json();
-       if (result.success) {
-         alert('Message sent!');
-         const savedReceiverId = receiverId;
-         this.reset();
-         document.getElementById('receiver-id').value = savedReceiverId;
-         location.reload();  // Reload the page to show the new message
-       } else {
-         alert('Failed to send: ' + result.error);
-       }
-     });
-
-     function filterMessages(type) {
-       const currentUserId = {{ current_user.id }};
-       const messageItems = document.querySelectorAll('#message-list li');
+    }, 100);
+  }
+  detail.innerHTML = html;
 
 
-       messageItems.forEach(item => {
-         const senderId = parseInt(item.getAttribute('data-sender-id'));
-         const receiverId = parseInt(item.getAttribute('data-receiver-id'));
 
-         if (type === 'all') {
-           item.style.display = '';
-         } else if (type === 'inbox') {
-           item.style.display = (receiverId === currentUserId) ? '' : 'none';
-         } else if (type === 'sent') {
-           item.style.display = (senderId === currentUserId) ? '' : 'none';
-         }
-       });
-     }
+  }
 
-     async function startConversation() {
-       const email = prompt("Enter the receiver's email:");
-       if (!email) return;
+  document.getElementById('reply-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-       const response = await fetch('/messages/find_user', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json',
-           "X-CSRFToken": csrfToken,
-         },
-         body: JSON.stringify({ email: email })
-       });
+    const receiverId = document.getElementById('receiver-id').value;
+    const messageText = this.message.value.trim();
+    const sharedFile = document.getElementById('shared-file').files[0];
 
-       const result = await response.json();
-       if (result.success) {
-         document.getElementById('receiver-id').value = result.user_id;
-         document.getElementById('message-detail').innerHTML = `
-           <div class="text-center p-4 animate-fadeIn">
-             <h2 class="text-2xl font-bold mb-2">New Conversation with ${result.username}</h2>
-             <p class="text-gray-500 mb-2">Start typing your message below!</p>
-           </div>
-         `;
-       } else {
-         alert('User not found!');
-       }
-     }
+    if (!receiverId) {
+      alert('Please select a conversation or start a new one.');
+      return;
+    }
+
+    if (!messageText && !sharedFile) {
+      alert('You must enter a message or upload a file.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('receiver_id', receiverId);
+    formData.append('message', messageText);
+    if (sharedFile) {
+      formData.append('shared_file', sharedFile);
+    }
+
+    const response = await fetch('/messages/send', {
+      method: 'POST',
+      body: formData,
+      headers: {"X-CSRFToken": csrfToken,}
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert('Message sent!');
+      const savedReceiverId = receiverId;
+      this.reset();
+      document.getElementById('receiver-id').value = savedReceiverId;
+      location.reload();  // Reload the page to show the new message
+    } else {
+      alert('Failed to send: ' + result.error);
+    }
+  });
+
+  function filterMessages(type) {
+    const currentUserId = {{ current_user.id }};
+    const messageItems = document.querySelectorAll('#message-list li');
+
+
+    messageItems.forEach(item => {
+      const senderId = parseInt(item.getAttribute('data-sender-id'));
+      const receiverId = parseInt(item.getAttribute('data-receiver-id'));
+
+      if (type === 'all') {
+        item.style.display = '';
+      } else if (type === 'inbox') {
+        item.style.display = (receiverId === currentUserId) ? '' : 'none';
+      } else if (type === 'sent') {
+        item.style.display = (senderId === currentUserId) ? '' : 'none';
+      }
+    });
+  }
+
+  async function startConversation() {
+    const email = prompt("Enter the receiver's email:");
+    if (!email) return;
+
+    const response = await fetch('/messages/find_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({ email: email })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      document.getElementById('receiver-id').value = result.user_id;
+      document.getElementById('message-detail').innerHTML = `
+        <div class="text-center p-4 animate-fadeIn">
+          <h2 class="text-2xl font-bold mb-2">New Conversation with ${result.username}</h2>
+          <p class="text-gray-500 mb-2">Start typing your message below!</p>
+        </div>
+      `;
+    } else {
+      alert('User not found!');
+    }
+  }
 </script>
 
 {% endblock %}
