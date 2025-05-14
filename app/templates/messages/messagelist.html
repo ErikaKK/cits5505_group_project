@@ -157,11 +157,11 @@
         <div class="flex items-center gap-4">
           <div class="flex-1">
             <p class="text-sm text-gray-500">Sender</p>
-            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : (!msg.sender ? "Me" : msg.sender)}</p>
+            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : ((msg.sender_id ==currentUserId) ?  "Me" :msg.sender)}</p>
           </div>
           <div class="flex-1">
             <p class="text-sm text-gray-500">Receiver</p>
-            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : (!msg.sender ? msg.receiver : "Me")}</p>
+            <p class="text-lg font-semibold text-gray-800">${msg.is_self ? "Me" : (msg.receiver_id==currentUserId ?  "Me":msg.receiver)}</p>
           </div>
         </div>
 

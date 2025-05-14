@@ -14,6 +14,7 @@ login_manager.login_view = "auth.login"  # Set the login view
 login_manager.login_message = (
     "Please log in to access this page"  # Set the login prompt message
 )
+login_manager.login_message_category = "error"
 
 
 def configure_logging(app):
