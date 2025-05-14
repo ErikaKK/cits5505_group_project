@@ -32,7 +32,7 @@ cd yourProjectDirectory
 1. With venv:
     ```bash
     # create environment
-    python3 -m venv venv
+    python3.9 -m venv venv
     
     # activate environment
     source venv/bin/activate    # macOS/Linux
