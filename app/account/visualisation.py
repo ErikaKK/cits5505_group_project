@@ -230,6 +230,7 @@ class Visualisation:
         """Create the complete dashboard and save to buffer"""
         try:
             figure, axis = pyplot.subplots(2, 2, figsize=(14, 10), facecolor="white")
+            figure.suptitle("Personalised Spotify Listening Dashboard", fontsize=14, fontweight='bold')
             axis = axis.flatten()
 
             self.top_artists_chart(axis[0])
