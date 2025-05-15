@@ -1,6 +1,40 @@
 # CITS5505 Group Project
 
-## Tech stack
+## What We Do（Purpose）
+- Discover Your Spotify Listening Journey
+
+- Transform your Spotify listening history into interactive visualizations and share your music journey with others. Our platform offers:
+
+### Comprehensive Analytics Dashboard:
+- 🎵 Top 5 Artists & Tracks - See who and what you've played the most
+- ⏰ Daily Rhythm - Visualize your listening patterns throughout the day
+- 📈 Monthly Trends - Track how your music habits evolve over time
+- 📅 Custom Date Range - Focus on specific time periods for deeper insights
+
+### Social Features:
+- 🔄 Share Analytics - Send your listening data to other registered users
+- 💬 Messaging System - Discuss music tastes through our built-in messenger
+- 👥 Community - View and explore dashboards shared by other users
+
+### Quick Search:
+- 🔍 Instant Track Info - Look up any song details using its Spotify ID
+- 🎯 No Registration Required - Access basic search features as a guest
+
+### Privacy & Security:
+- 🔒 Secure Sharing - Share your data only with chosen users
+- 👤 User Authentication - Protected access to personal dashboard
+- 📊 Data Control - Manage who sees your listening history
+
+## Contributors
+### Masters Group 64
+| UWA ID              | Name | Github Username                           |
+| ------------------- | ------ | -------------------------------------------- |
+| 24071068       | Erica Kong | ErikaKK                  |
+| 24422053      | Vincent Ma | iviiincent                |
+| 24231774  | Nikhil Chadha | nikhilchadha28     |
+| 24085253| Chenglin Hou  | 24085253|
+
+## Tech Stack
 - HTML
 - CSS
 - Tailwind
@@ -66,11 +100,24 @@ cd yourProjectDirectory
 ```bash
 python3 run.py
 ```
-### Creating the database
+### Create the database
+```bash
+flask db upgrade
+```
 
+- If you encounter database issues:
+```bash
+# Remove existing database
+rm instance/app.db
+
+# Reset migrations
+flask db stamp base
+
+# Reapply all migrations
+flask db upgrade
+```
 
 ### After modifying the models
-
 ```bash
 flask db migrate
 flask db upgrade
@@ -79,13 +126,15 @@ flask db upgrade
 ## Explanations
 
 - `app/` Contains the main application package.​
-  - `auth/` Blueprint for authentication-related routes and forms.​
-  - `main/` Blueprint for main application routes and forms
-  - `error/` Error handling for this app
-  - `static/` Contains static files i.e. CSS, Javascript, images
   - `__init__.py` Initializes your application creating a Flask app instance.
   - `models.py` Defines database models using SQLAlchemy.
+  - `main/` Blueprint for main application routes and forms. [Main Routes Documentation](app/main/README.md)
+  - `auth/` Blueprint for authentication-related routes and forms. [Authentication Documentation](app/auth/README.md)
+  - `account/` Blueprint for account management routes and forms.[Account Management Documentation](app/account/README.md)
+  - `messages/` Blueprint for messages routes and forms.[Messages System Documentation](app/messages/README.md)
+  - `error/` Error handling for this app.
   - `templates/` This is where you store your html templates i.e. index.html, layout.html
+  - `static/` Contains static files i.e. CSS, Javascript, images.
 - `run.py` Contains the actual python code that will import the app and start the development server.
 - `config.py` Stores configurations for your app.
 - `tests/` Contains tests for this app. Use `pytest` in `bash` to run all the tests.
