@@ -52,7 +52,6 @@ def register():
                 "danger",
             )
             return redirect(url_for("auth.register"))
-
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)

@@ -79,13 +79,14 @@ flask db upgrade
 - `app/` Contains the main application package.​
   - `auth/` Blueprint for authentication-related routes and forms.​
   - `main/` Blueprint for main application routes and forms
-  - `static/` contains static files i.e. CSS, Javascript, images
-  - `__init__.py` initializes your application creating a Flask app instance.
+  - `error/` Error handling for this app
+  - `static/` Contains static files i.e. CSS, Javascript, images
+  - `__init__.py` Initializes your application creating a Flask app instance.
   - `models.py` Defines database models using SQLAlchemy.
-  - `views.py` this is where routes are defined.
-- `run.py` contains the actual python code that will import the app and start the development server.
-- `config.py` stores configurations for your app.
-- `templates/` this is where you store your html templates i.e. index.html, layout.html
+  - `templates/` This is where you store your html templates i.e. index.html, layout.html
+- `run.py` Contains the actual python code that will import the app and start the development server.
+- `config.py` Stores configurations for your app.
+- `tests/` Contains tests for this app. Use `pytest` in `bash` to run all the tests.
 - `requirements.txt` this is where you store your package dependencies, you can use pip
 
 ## Visualisation
