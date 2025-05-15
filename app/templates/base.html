@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link
       rel="stylesheet"
       href="{{url_for('static', filename='css/main.css')}}"
@@ -42,7 +43,7 @@
         </svg>
       </button>
       <div
-        class="hidden fixed flex justify-center items-center z-9999 top-0 left-0 w-screen h-screen md:relative md:w-auto md:h-auto bg-gray-100 md:bg-white md:block"
+        class="hidden fixed flex justify-center items-center z-99 top-0 left-0 w-screen h-screen md:relative md:w-auto md:h-auto bg-gray-100 md:bg-white md:block"
         id="navbar-menu"
       >
         <div
