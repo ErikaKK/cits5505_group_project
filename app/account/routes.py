@@ -485,5 +485,4 @@ def visualise_dashboard():
         return send_file(img_bytesio, mimetype="image/png", as_attachment=False)
 
     except Exception as e:
-        print(f"Error in dashboard route: {str(e)}")
         return jsonify({"error": str(e)}), 500
