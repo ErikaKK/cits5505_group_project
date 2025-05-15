@@ -139,7 +139,6 @@ flask db upgrade
 - `config.py` Stores configurations for the app.
 - `requirements.txt` This is where package dependencies are stored.
 - `tests/` Contains tests for this app. Use `pytest` in `bash` to run all the tests.
-- `.github/` Templates for issues and pull requests
 - `migrations/` Migration historys.
 
 ## Visualisation
