@@ -126,24 +126,26 @@ flask db upgrade
 ## Explanations
 
 - `app/` Contains the main application package.​
-  - `__init__.py` Initializes your application creating a Flask app instance.
+  - `__init__.py` Initializes the application creating a Flask app instance.
   - `models.py` Defines database models using SQLAlchemy.
   - `main/` Blueprint for main application routes and forms. [Main Routes Documentation](app/main/README.md)
   - `auth/` Blueprint for authentication-related routes and forms. [Authentication Documentation](app/auth/README.md)
   - `account/` Blueprint for account management routes and forms.[Account Management Documentation](app/account/README.md)
   - `messages/` Blueprint for messages routes and forms.[Messages System Documentation](app/messages/README.md)
   - `error/` Error handling for this app.
-  - `templates/` This is where you store your html templates i.e. index.html, layout.html
+  - `templates/` This is where html templates i.e. index.html, layout.html are stored.
   - `static/` Contains static files i.e. CSS, Javascript, images.
 - `run.py` Contains the actual python code that will import the app and start the development server.
-- `config.py` Stores configurations for your app.
+- `config.py` Stores configurations for the app.
+- `requirements.txt` This is where package dependencies are stored.
 - `tests/` Contains tests for this app. Use `pytest` in `bash` to run all the tests.
-- `requirements.txt` this is where you store your package dependencies, you can use pip
+- `.github/` Templates for issues and pull requests
+- `migrations/` Migration historys.
 
 ## Visualisation
-This feature allows user to upload their Spotify music history data (.json extension file) and display them 4 different personalised graphs. This makes user to understand their music listening behaviour
+This feature allows user to use their Spotify music history data (.json extension file) to display 4 different personalised graphs. This makes user to understand their music listening behaviours.
 
- ### Features
+### Features
 - `Top 5 Artists Played graph`
    Displays top 5 artists played by user by taking sum of minutes played.
 - `Top 5 Tracks Played graph`
@@ -153,7 +155,7 @@ This feature allows user to upload their Spotify music history data (.json exten
 - `Average Minutes Played`
    Displays the average of minutes spend by user on listening to music each hour of any day.
 
-  ### Technologies used
+### Technologies used
 - `Python`: to open json file and help stucturing visual dashboard
 - `Pandas`: to handle json file data and stucture that to table form
 - `Matplotlib`: to create visualisation graphs.
