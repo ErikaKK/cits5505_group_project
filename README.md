@@ -91,20 +91,20 @@ flask db upgrade
 ## Visualisation
 This feature allows user to upload their Spotify music history data (.json extension file) and display them 4 different personalised graphs. This makes user to understand their music listening behaviour
 
-    ### Features
-     - `Top 5 Artists Played graph`
-       Displays top 5 artists played by user by taking sum of minutes played.
-     - `Top 5 Tracks Played graph`
-       Displays top 5 Tracks Played by user by taking sum of minutes played.
-     - `Monthly Listening Time (in Hours)`
-       Displays monthly time spend in listening music by user by taking sum of time of music played.
-     - `Average Minutes Played`
-       Displays the average of minutes spend by user on listening to music each hour of any day.
+ ### Features
+- `Top 5 Artists Played graph`
+   Displays top 5 artists played by user by taking sum of minutes played.
+- `Top 5 Tracks Played graph`
+   Displays top 5 Tracks Played by user by taking sum of minutes played.
+- `Monthly Listening Time (in Hours)`
+   Displays monthly time spend in listening music by user by taking sum of time of music played.
+- `Average Minutes Played`
+   Displays the average of minutes spend by user on listening to music each hour of any day.
 
-    ### Technologies used
-    `Python`: to open json file and help stucturing visual dashboard
-    `Pandas`: to handle json file data and stucture that to table form
-    `Matplotlib`: to create visualisation graphs.
+  ### Technologies used
+   `Python`: to open json file and help stucturing visual dashboard
+   `Pandas`: to handle json file data and stucture that to table form
+   `Matplotlib`: to create visualisation graphs.
 
 ## Project Workflow:
 1. create an issue
