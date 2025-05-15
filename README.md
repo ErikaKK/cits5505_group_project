@@ -102,9 +102,9 @@ This feature allows user to upload their Spotify music history data (.json exten
    Displays the average of minutes spend by user on listening to music each hour of any day.
 
   ### Technologies used
-   `Python`: to open json file and help stucturing visual dashboard
-   `Pandas`: to handle json file data and stucture that to table form
-   `Matplotlib`: to create visualisation graphs.
+- `Python`: to open json file and help stucturing visual dashboard
+- `Pandas`: to handle json file data and stucture that to table form
+- `Matplotlib`: to create visualisation graphs.
 
 ## Project Workflow:
 1. create an issue
