@@ -72,7 +72,8 @@ def send_message():
             )
 
     try:
-        receiver_user = User.query.get(receiver_id)
+        receiver_user = db.session.get(User, receiver_id)
+
         if not receiver_user:
             return jsonify({"success": False, "error": "Receiver not found"}), 404
 
