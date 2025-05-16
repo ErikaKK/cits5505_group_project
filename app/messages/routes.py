@@ -28,6 +28,7 @@ def show_messages():
 
     return render_template(
         "messages/messagelist.html",
+        title="Messages",
         login=current_user.is_authenticated,
         messages=[
             {
