@@ -168,7 +168,8 @@ class Visualisation:
             )
             return
 
-        self.table["year_month"] = self.table["timestamp"].dt.to_period("M").astype(str)
+        self.table["year_month"] = self.table["timestamp"].dt.tz_localize(None).dt.to_period("M").astype(str)
+
         monthly_play = self.table.groupby("year_month")["hours_played"].sum()
 
         line = axis.plot(
