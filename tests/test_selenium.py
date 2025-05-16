@@ -1,3 +1,4 @@
+import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,8 +9,8 @@ import time
 import os
 
 
-class TestUserInteractions:
-    def setup_method(self):
+class TestUserInteractions(unittest.TestCase):
+    def setUp(self):
         if not os.path.exists("tests/screenshots"):
             os.makedirs("tests/screenshots")
         service = Service(ChromeDriverManager().install())
@@ -18,10 +19,10 @@ class TestUserInteractions:
         self.base_url = "http://127.0.0.1:5000"
         self.driver.get(self.base_url)
 
-    def teardown_method(self):
-        if self.driver:
+    def tearDown(self):
+        if hasattr(self, "driver") and self.driver:
             self.driver.save_screenshot(
-                f"/tests/screenshots/test_failure_{time.time()}.png"
+                f"tests/screenshots/test_failure_{time.time()}.png"
             )
             self.driver.quit()
 
@@ -49,8 +50,8 @@ class TestUserInteractions:
             submit_button = self.driver.find_element(By.ID, "submit")
 
             # Fill form
-            email_input.send_keys("test@example.com")
-            password_input.send_keys("password123")
+            email_input.send_keys("test@gmail.com")
+            password_input.send_keys("test111")
             remember_me.click()
 
             # Submit form
@@ -65,7 +66,7 @@ class TestUserInteractions:
 
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/login_failure_{time.time()}.png"
+                f"tests/screenshots/login_failure_{time.time()}.png"
             )
             raise e
 
@@ -117,7 +118,7 @@ class TestUserInteractions:
 
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/register_failure_{time.time()}.png"
+                f"tests/screenshots/register_failure_{time.time()}.png"
             )
             raise e
 
@@ -148,7 +149,7 @@ class TestUserInteractions:
 
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/validation_failure_{time.time()}.png"
+                f"tests/screenshots/validation_failure_{time.time()}.png"
             )
             raise e
 
@@ -172,7 +173,7 @@ class TestUserInteractions:
 
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/style_failure_{time.time()}.png"
+                f"tests/screenshots/style_failure_{time.time()}.png"
             )
             raise e
 
@@ -185,7 +186,7 @@ class TestUserInteractions:
             return element
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/wait_failure_{time.time()}.png"
+                f"tests/screenshots/wait_failure_{time.time()}.png"
             )
             raise e
 
@@ -225,7 +226,7 @@ class TestUserInteractions:
 
         except Exception as e:
             print(f"Login failed: {str(e)}")
-            self.driver.save_screenshot("/tests/screenshots/login_failure.png")
+            self.driver.save_screenshot("tests/screenshots/login_failure.png")
             raise
 
     def test_upload_page(self):
@@ -269,6 +270,10 @@ class TestUserInteractions:
 
         except Exception as e:
             self.driver.save_screenshot(
-                f"/tests/screenshots/upload_failure_{time.time()}.png"
+                f"tests/screenshots/upload_failure_{time.time()}.png"
             )
             raise e
+
+
+if __name__ == "__main__":
+    unittest.main()
