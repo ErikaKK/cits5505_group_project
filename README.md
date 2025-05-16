@@ -128,18 +128,20 @@ flask db upgrade
 - `app/` Contains the main application package.​
   - `__init__.py` Initializes the application creating a Flask app instance.
   - `models.py` Defines database models using SQLAlchemy.
+  - `exceptions.py` Defines exceptions.
   - `main/` Blueprint for main application routes and forms. [Main Routes Documentation](app/main/README.md)
   - `auth/` Blueprint for authentication-related routes and forms. [Authentication Documentation](app/auth/README.md)
   - `account/` Blueprint for account management routes and forms.[Account Management Documentation](app/account/README.md)
   - `messages/` Blueprint for messages routes and forms.[Messages System Documentation](app/messages/README.md)
-  - `error/` Error handling for this app.
+  - `error/` Error handling for this app.[Error Handling System Documentation](app/errors/README.md)
   - `templates/` This is where html templates i.e. index.html, layout.html are stored.
   - `static/` Contains static files i.e. CSS, Javascript, images.
 - `run.py` Contains the actual python code that will import the app and start the development server.
 - `config.py` Stores configurations for the app.
 - `requirements.txt` This is where package dependencies are stored.
-- `tests/` Contains tests for this app. Use `pytest` in `bash` to run all the tests.
-- `migrations/` Migration historys.
+- `tests/` Contains tests for this app. Click [here](#testing) to see how to run the tests.
+- `migrations/` Contains database migration historys.
+- `log/` Contains application logs.
 
 ## Visualisation
 This feature allows user to use their Spotify music history data (.json extension file) to display 4 different personalised graphs. This makes user to understand their music listening behaviours.
