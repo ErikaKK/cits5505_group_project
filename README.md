@@ -32,7 +32,7 @@
 | 24071068       | Erica Kong | [ErikaKK](https://github.com/ErikaKK)                  |
 | 24422053      | Vincent Ma | [iviiincent](https://github.com/iviiincent)                |
 | 24231774  | Nikhil Chadha | [nikhilchadha28](https://github.com/nikhilchadha28)     |
-| 24085253| Chenglin Hou  | [24085253](https://github.com/24085253) |
+| 24085253| Chenglin Hou  | [24085253](https://github.com/24085253)/CLHHOO |
 
 ## Tech Stack
 - HTML
