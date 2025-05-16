@@ -126,13 +126,14 @@ flask db upgrade
 ## Testing
 
 ### Unit Tests
-Tests individual components of the application:
-- Models (User, Message, SpotifyData)
-- Routes (auth, account, main)
-- Database operations
-- Form validation
+#### Tests individual components of the application:
+- Messages
+- Security
+- Homepage UI
+- Visualisation
+- Error handling
 
-Run unit tests:
+#### Run unit tests:
 ```bash
 # Run all tests
 python -m pytest tests/test_unit.py
