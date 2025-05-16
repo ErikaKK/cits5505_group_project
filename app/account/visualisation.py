@@ -111,9 +111,9 @@ class Visualisation:
             )
 
         axis.set_title("Top 5 Artists Played", fontsize=14, fontweight="bold")
-        axis.set_xlabel("Artist", fontsize=12)
+        axis.set_xlabel("Artist Name", fontsize=12)
         axis.set_ylabel("Minutes Played", fontsize=12)
-        axis.tick_params(axis="x", rotation=30, labelsize=9)
+        axis.tick_params(axis="x", rotation=20, labelsize=9)
 
     def top_tracks_chart(self, axis):
         """Create top 5 tracks chart"""
@@ -149,7 +149,7 @@ class Visualisation:
             )
 
         axis.set_title("Top 5 Tracks Played", fontsize=14, fontweight="bold")
-        axis.set_xlabel("Track", fontsize=12)
+        axis.set_xlabel("Track Name", fontsize=12)
         axis.set_ylabel("Minutes Played", fontsize=12)
         axis.tick_params(axis="x", rotation=30, labelsize=9)
 
@@ -173,12 +173,13 @@ class Visualisation:
         monthly_play = self.table.groupby("year_month")["hours_played"].sum()
 
         line = axis.plot(
-            monthly_play.index, monthly_play.values, color="mediumslateblue", marker="o"
+            monthly_play.index, monthly_play.values, color="darkslateblue", marker="o"
         )
 
         # Add value labels on points
         for x, y in zip(monthly_play.index, monthly_play.values):
-            axis.text(x, y, f"{round(y, 1)}", ha="center", va="bottom")
+            axis.text(x, y+0.25, f"{round(y, 1)}", ha="center", va="bottom"
+                      ,bbox=dict(boxstyle='roundtooth',facecolor='lightyellow',edgecolor='black', pad=0.1))
 
         axis.set_title(
             "Monthly Listening Time (in Hours)", fontsize=14, fontweight="bold"
@@ -217,10 +218,11 @@ class Visualisation:
 
         # Add value labels on points
         for x, y in zip(avg_per_hour.index, avg_per_hour.values):
-            axis.text(x, y, f"{round(y, 1)}", ha="center", va="bottom")
+            axis.text(x, y+0.25 , f"{round(y, 1)}", ha="center", va="bottom"
+                      ,bbox=dict(boxstyle='roundtooth',facecolor='yellow',edgecolor='black', pad=0.1))
 
         axis.set_title(
-            "Average Listening Time Per Hour", fontsize=14, fontweight="bold"
+            "Average Listening Time Every Hour", fontsize=14, fontweight="bold"
         )
         axis.set_xlabel("Hour of Day", fontsize=12)
         axis.set_ylabel("Average Minutes Played", fontsize=12)
