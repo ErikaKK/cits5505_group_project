@@ -1,8 +1,6 @@
 __pycache__/
 venv/
-logs/
 instance/
 .log
 screenshots/
 .DS_Store
-app.db
