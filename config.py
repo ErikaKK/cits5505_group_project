@@ -13,7 +13,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Security settings
-    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False  # For Development (localhost/HTTP)
     REMEMBER_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True

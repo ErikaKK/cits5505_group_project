@@ -1,6 +1,6 @@
-# Account Management and Spotify Data Visualization
+# Account Management and Spotify Data visualisation
 
-- This module handles user account management, Spotify data upload, visualization, and data sharing functionality.
+- This module handles user account management, Spotify data upload, visualisation, and data sharing functionality.
 - path: `/account`
 
 ## Key Features
@@ -10,7 +10,7 @@
 | Profile Management    | Update username, email, and personal information             |
 | Password Management   | Secure password change functionality                         |
 | Data Upload          | Upload and merge Spotify listening history JSON files        |
-| Data Visualization   | Interactive dashboard showing listening patterns              |
+| Data visualisation   | Interactive dashboard showing listening patterns              |
 | Data Sharing         | Share selected date ranges of listening data with other users |
 | Conflict Resolution  | Smart handling of overlapping or conflicting data uploads     |
 
@@ -27,11 +27,11 @@
 | /upload-file            | POST   | Process JSON file upload                              |
 | /replace-data           | POST   | Replace existing Spotify data                         |
 | /share-data             | POST   | Share Spotify data with another user                  |
-| /dashboard              | GET    | Display visualization dashboard                       |
-| /visualise/date-range   | GET    | Get available date range for visualization            |
-| /visualise/dashboard    | POST   | Generate visualization for selected date range        |
+| /dashboard              | GET    | Display visualisation dashboard                       |
+| /visualise/date-range   | GET    | Get available date range for visualisation            |
+| /visualise/dashboard    | POST   | Generate visualisation for selected date range        |
 
-## Data Visualization Features
+## Data visualisation Features
 
 - Top 5 Artists Chart
 - Top 5 Tracks Chart
