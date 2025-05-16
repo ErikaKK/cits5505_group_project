@@ -3,3 +3,4 @@ venv/
 instance/
 .log
 screenshots/
+.DS_Store
