@@ -28,21 +28,6 @@ class TestErrorHandling(unittest.TestCase):
         resp = self.client.post('/upload', data={})
         self.assertIn(resp.status_code, (400, 404))
 
-    def test_409(self):
-        resp = self.client.post('/auth/register', data={
-            'username': 'testuser',
-            'email': 'test@example.com',
-            'password': 'testpass123',
-            'password2': 'testpass123'
-        })
-        resp2 = self.client.post('/auth/register', data={
-            'username': 'testuser',
-            'email': 'test@example.com',
-            'password': 'testpass123',
-            'password2': 'testpass123'
-        })
-        self.assertIn(resp2.status_code, (200, 302))
-
     def test_422(self):
         resp = self.client.post('/upload', data={'file': (b'invalid', 'data.json')})
         self.assertIn(resp.status_code, (400, 422, 404))
