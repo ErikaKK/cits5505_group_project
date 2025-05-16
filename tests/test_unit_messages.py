@@ -2,7 +2,6 @@ import unittest
 from app import create_app, db
 from app.models import User, Message
 from config import TestConfig
-from datetime import datetime
 import json
 
 
