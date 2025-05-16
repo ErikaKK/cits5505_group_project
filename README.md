@@ -123,6 +123,43 @@ flask db migrate
 flask db upgrade
 ```
 
+## Testing
+
+### Unit Tests
+Tests individual components of the application:
+- Models (User, Message, SpotifyData)
+- Routes (auth, account, main)
+- Database operations
+- Form validation
+
+Run unit tests:
+```bash
+# Run all tests
+python -m pytest tests/test_unit.py
+
+# Run specific test class
+python -m pytest tests/test_unit.py -k TestModels
+
+# Run with coverage report
+coverage run -m pytest tests/test_unit.py
+coverage report
+```
+### Selenium Tests
+#### Tests user interface and form interactions:
+- Login flow
+- Registration flow
+- Form validation
+- Login UI styling
+- Upload page
+
+#### Run tests:
+```bash
+# Start Flask server. Make sure the server running on http://127.0.0.1:5000
+flask run  
+
+# Run tests
+pytest tests/test_selenium.py -v
+```
 ## Explanations
 
 - `app/` Contains the main application package.​

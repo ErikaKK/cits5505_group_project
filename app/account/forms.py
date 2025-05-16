@@ -18,5 +18,9 @@ class PasswordForm(FlaskForm):
         "New Password", validators=[DataRequired(), Length(min=6, max=128)]
     )
     confirm_password = PasswordField(
-        "Confirm New Password", validators=[DataRequired(), EqualTo("new_password")]
+        "Confirm New Password",
+        validators=[
+            DataRequired(),
+            EqualTo("new_password", message="Passwords must match"),
+        ],
     )
