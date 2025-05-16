@@ -23,13 +23,14 @@ def configure_logging(app):
     app.logger.addHandler(handler)
 
 
-def create_app(config=None):
+def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
     csrf = CSRFProtect(app)
 
-    if config:
-        app.config.update(config)
+    # Override with test config if provided
+    if config_class and config_class != Config:
+        app.config.from_object(config_class)
     configure_logging(app)
     db.init_app(app)
     migrate.init_app(app, db)

@@ -6,5 +6,5 @@ from flask_login import current_user
 @bp.route("/")
 def index():
     return render_template(
-        "index.html", title="Home", login=current_user.is_authenticated
+        "index.html", title="SpotifyDash", login=current_user.is_authenticated
     )

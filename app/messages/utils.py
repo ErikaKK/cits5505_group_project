@@ -1,6 +1,5 @@
 from app import db
 from app.models import Message, User
-from datetime import datetime
 
 
 def send_message_internal(

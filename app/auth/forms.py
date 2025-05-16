@@ -2,15 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import (
     DataRequired,
-    ValidationError,
     DataRequired,
     Email,
     EqualTo,
     Length,
 )
-import sqlalchemy as sa
-from app import db
-from ..models import User
 
 
 class LoginForm(FlaskForm):
@@ -27,6 +23,10 @@ class RegistrationForm(FlaskForm):
         "Password", validators=[DataRequired(), Length(min=6, max=128)]
     )
     password2 = PasswordField(
-        "Confirm Password", validators=[DataRequired(), EqualTo("password")]
+        "Confirm Password",
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match"),
+        ],
     )
     submit = SubmitField("Register")

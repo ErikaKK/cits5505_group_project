@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -21,3 +19,10 @@ class Config:
     # CSRF protection
     WTF_CSRF_ENABLED = True
     WTF_CSRF_SECRET_KEY = os.environ.get("CSRF_SECRET_KEY") or "csrf-secret-key"
+
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite://"  # Use in-memory database
+    WTF_CSRF_ENABLED = False
+    SERVER_NAME = "localhost:5000"
