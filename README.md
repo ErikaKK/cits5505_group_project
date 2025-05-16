@@ -108,7 +108,7 @@ flask db upgrade
 - If you encounter database issues:
 ```bash
 # Remove existing database
-rm instance/app.db
+rm app.db
 
 # Reset migrations
 flask db stamp base
