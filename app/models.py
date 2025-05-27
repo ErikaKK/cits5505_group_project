@@ -11,8 +11,7 @@ db = SQLAlchemy()
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = "user"
-    __table_args__ = {"quote": True}
+    __tablename__ = "users"
 
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
@@ -34,7 +33,7 @@ class User(UserMixin, db.Model):
 class SpotifyData(db.Model):
     __tablename__ = "spotify-data"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     data = db.Column(db.JSON, nullable=False)
 
     def __repr__(self):
@@ -44,8 +43,8 @@ class SpotifyData(db.Model):
 class Message(db.Model):
     __tablename__ = "message"
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.String, default=lambda: datetime.now(timezone.utc))
     shared_data = db.Column(db.JSON, nullable=True)
