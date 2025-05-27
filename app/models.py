@@ -32,6 +32,7 @@ class User(UserMixin, db.Model):
 
 
 class SpotifyData(db.Model):
+    __tablename__ = "spotify-data"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     data = db.Column(db.JSON, nullable=False)
@@ -41,6 +42,7 @@ class SpotifyData(db.Model):
 
 
 class Message(db.Model):
+    __tablename__ = "message"
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
