@@ -108,7 +108,7 @@ flask db upgrade
 - If you encounter database issues:
 ```bash
 # Remove existing database
-rm instance/app.db
+rm app.db
 
 # Reset migrations
 flask db stamp base
@@ -122,10 +122,6 @@ flask db upgrade
 flask db migrate
 flask db upgrade
 ```
-### Log In
-- user: username `test@example.com`, email `test@example.com`, password `password123`
-### Upload File
-- Upload sample file `tests/sample_test_data.json`
 
 ## Testing
 
